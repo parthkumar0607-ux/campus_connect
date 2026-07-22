@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:campus_connect_v2/features/auth/presentation/screens/register_screen.dart';
+import 'package:campus_connect_v2/features/navigation/presentation/screens/main_navigation_screen.dart';
 import 'package:campus_connect_v2/shared/widgets/divider_with_text.dart';
 import 'package:campus_connect_v2/shared/widgets/primary_button.dart';
 import 'package:campus_connect_v2/shared/widgets/primary_textfield.dart';
@@ -27,10 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Login"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text("Login"), centerTitle: true),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -39,20 +37,14 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               const SizedBox(height: 40),
 
-              const Icon(
-                Icons.school_rounded,
-                size: 90,
-              ),
+              const Icon(Icons.school_rounded, size: 90),
 
               const SizedBox(height: 20),
 
               const Text(
                 "CampusConnect",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
 
               const SizedBox(height: 8),
@@ -60,10 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const Text(
                 "Welcome Back!",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey,
-                ),
+                style: TextStyle(fontSize: 18, color: Colors.grey),
               ),
 
               const SizedBox(height: 40),
@@ -83,9 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: obscurePassword,
                 suffixIcon: IconButton(
                   icon: Icon(
-                    obscurePassword
-                        ? Icons.visibility_off
-                        : Icons.visibility,
+                    obscurePassword ? Icons.visibility_off : Icons.visibility,
                   ),
                   onPressed: () {
                     setState(() {
@@ -98,11 +85,12 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 30),
 
               PrimaryButton(
-                text: "Login",
+                text: "THIS IS A TEST",
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Login feature coming soon"),
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MainNavigationScreen(),
                     ),
                   );
                 },
@@ -110,15 +98,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 25),
 
-              const DividerWithText(
-                text: "OR",
-              ),
+              const DividerWithText(text: "OR"),
 
               const SizedBox(height: 20),
 
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).push(
+                  Navigator.push(
+                    context,
                     MaterialPageRoute(
                       builder: (context) => const RegisterScreen(),
                     ),
@@ -126,10 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 child: const Text(
                   "Create Account",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ],
