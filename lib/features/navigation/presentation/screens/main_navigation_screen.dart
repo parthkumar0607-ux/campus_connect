@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:campus_connect_v2/features/home/presentation/screens/home_screen.dart';
 import 'package:campus_connect_v2/features/events/presentation/screens/events_screen.dart';
+import 'package:campus_connect_v2/features/chat/presentation/screens/chat_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -17,15 +18,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   final List<Widget> _pages = const [
     HomeScreen(),
     EventsScreen(),
-    Center(
-      child: Text(
-        "💬 Chat",
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
+    ChatScreen(),
     Center(
       child: Text(
         "👥 Teams",
@@ -50,7 +43,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_selectedIndex],
-
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: (index) {
