@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:campus_connect_v2/features/home/presentation/screens/home_screen.dart';
 import 'package:campus_connect_v2/features/events/presentation/screens/events_screen.dart';
 import 'package:campus_connect_v2/features/chat/presentation/screens/chat_screen.dart';
+import 'package:campus_connect_v2/features/teams/presentation/screens/teams_screen.dart';
+import 'package:campus_connect_v2/features/profile/presentation/screens/profile_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -19,24 +21,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     HomeScreen(),
     EventsScreen(),
     ChatScreen(),
-    Center(
-      child: Text(
-        "👥 Teams",
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
-    Center(
-      child: Text(
-        "👤 Profile",
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
+    TeamsScreen(),
+    ProfileScreen(),
   ];
 
   @override
