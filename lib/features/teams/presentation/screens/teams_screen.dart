@@ -1,8 +1,45 @@
 import 'package:flutter/material.dart';
-import '../widgets/team_card.dart';
 
-class TeamsScreen extends StatelessWidget {
+import 'package:campus_connect_v2/features/teams/data/models/team_model.dart';
+import 'package:campus_connect_v2/features/teams/data/repositories/team_repository.dart';
+import 'package:campus_connect_v2/features/teams/presentation/screens/create_team_screen.dart';
+
+class TeamsScreen extends StatefulWidget {
   const TeamsScreen({super.key});
+
+  @override
+  State<TeamsScreen> createState() => _TeamsScreenState();
+}
+
+class _TeamsScreenState extends State<TeamsScreen> {
+  final TeamRepository repository = TeamRepository();
+
+  late Future<List<TeamModel>> teamsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    loadTeams();
+  }
+
+  void loadTeams() {
+    teamsFuture = repository.getTeams();
+  }
+
+  Future<void> openCreateTeam() async {
+    final created = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const CreateTeamScreen(),
+      ),
+    );
+
+    if (created == true) {
+      setState(() {
+        loadTeams();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,52 +49,94 @@ class TeamsScreen extends StatelessWidget {
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: openCreateTeam,
         child: const Icon(Icons.add),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          TextField(
-            decoration: InputDecoration(
-              hintText: "Search Teams",
-              prefixIcon: const Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+      body: FutureBuilder<List<TeamModel>>(
+        future: teamsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState ==
+              ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
+
+          final teams = snapshot.data ?? [];
+
+          if (teams.isEmpty) {
+            return const Center(
+              child: Text(
+                "No teams created yet.",
+                style: TextStyle(fontSize: 18),
               ),
-            ),
-          ),
+            );
+          }
 
-          const SizedBox(height: 25),
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: teams.length,
+            itemBuilder: (context, index) {
+              final team = teams[index];
 
-          const TeamCard(
-            teamName: "Team Alpha",
-            roleNeeded: "Flutter Developer",
-            members: "2/4",
-            techStack: "Flutter • Firebase",
-          ),
+              return Card(
+                margin: const EdgeInsets.only(bottom: 16),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        team.title,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
 
-          const TeamCard(
-            teamName: "VisionX",
-            roleNeeded: "AI/ML Engineer",
-            members: "3/5",
-            techStack: "Python • TensorFlow",
-          ),
+                      const SizedBox(height: 8),
 
-          const TeamCard(
-            teamName: "CodeStorm",
-            roleNeeded: "UI/UX Designer",
-            members: "1/4",
-            techStack: "Figma • Flutter",
-          ),
+                      Text(team.description),
 
-          const TeamCard(
-            teamName: "CyberGuard",
-            roleNeeded: "Backend Developer",
-            members: "2/4",
-            techStack: "FastAPI • PostgreSQL",
-          ),
-        ],
+                      const SizedBox(height: 12),
+
+                      Row(
+                        children: [
+                          const Icon(Icons.code),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              team.techStack,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      Row(
+                        children: [
+                          const Icon(Icons.groups),
+                          const SizedBox(width: 8),
+                          Text(
+                            "${team.currentMembers}/${team.maxMembers} Members",
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
