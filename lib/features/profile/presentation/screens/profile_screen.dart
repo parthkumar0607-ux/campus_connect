@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
+
+import 'package:campus_connect_v2/core/services/storage_service.dart';
+import 'package:campus_connect_v2/features/auth/presentation/screens/login_screen.dart';
+
 import '../widgets/profile_stat_card.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
+  Future<void> logout(BuildContext context) async {
+    await StorageService.logout();
+
+    if (!context.mounted) return;
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const LoginScreen(),
+      ),
+      (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +32,6 @@ class ProfileScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-
           const CircleAvatar(
             radius: 55,
             child: Icon(
@@ -124,6 +141,14 @@ class ProfileScreen extends StatelessWidget {
           FilledButton(
             onPressed: () {},
             child: const Text("Edit Profile"),
+          ),
+
+          const SizedBox(height: 16),
+
+          FilledButton.tonalIcon(
+            onPressed: () => logout(context),
+            icon: const Icon(Icons.logout),
+            label: const Text("Logout"),
           ),
         ],
       ),
