@@ -1,4 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+
+import 'package:campus_connect_v2/features/auth/data/repositories/auth_repository.dart';
 import 'package:campus_connect_v2/shared/widgets/primary_button.dart';
 import 'package:campus_connect_v2/shared/widgets/primary_textfield.dart';
 
@@ -10,14 +13,23 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final TextEditingController fullNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final AuthRepository repository = AuthRepository();
+
+  final TextEditingController fullNameController =
+      TextEditingController();
+
+  final TextEditingController emailController =
+      TextEditingController();
+
+  final TextEditingController passwordController =
+      TextEditingController();
+
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -26,6 +38,94 @@ class _RegisterScreenState extends State<RegisterScreen> {
     passwordController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  Future<void> register() async {
+    if (fullNameController.text.trim().isEmpty ||
+        emailController.text.trim().isEmpty ||
+        passwordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please fill all fields"),
+        ),
+      );
+      return;
+    }
+
+    if (passwordController.text !=
+        confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Passwords do not match"),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await repository.register(
+        name: fullNameController.text.trim(),
+        email: emailController.text.trim(),
+        password: passwordController.text,
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Account created successfully 🎉"),
+        ),
+      );
+
+      Navigator.pop(context);
+    } on DioException catch (e) {
+      String message = "Registration failed";
+
+      if (e.response != null && e.response!.data is Map) {
+        final detail = e.response!.data["detail"];
+
+        if (detail is String) {
+          message = detail;
+        } else if (detail is List && detail.isNotEmpty) {
+          final first = detail.first;
+
+          if (first is Map && first["msg"] != null) {
+            message = first["msg"].toString();
+          } else {
+            message = detail.toString();
+          }
+        }
+      } else {
+        message = e.message ?? "Network Error";
+      }
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -39,7 +139,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment:
+                CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 30),
 
@@ -110,10 +211,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 20),
 
               PrimaryTextField(
-                controller: confirmPasswordController,
+                controller:
+                    confirmPasswordController,
                 hintText: "Confirm Password",
                 prefixIcon: Icons.lock_outline,
-                obscureText: obscureConfirmPassword,
+                obscureText:
+                    obscureConfirmPassword,
                 suffixIcon: IconButton(
                   icon: Icon(
                     obscureConfirmPassword
@@ -133,13 +236,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               PrimaryButton(
                 text: "Register",
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Registration coming soon 🚀"),
-                    ),
-                  );
-                },
+                isLoading: isLoading,
+                onPressed: register,
               ),
 
               const SizedBox(height: 20),
