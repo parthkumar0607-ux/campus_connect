@@ -5,7 +5,9 @@ import 'package:campus_connect_v2/features/splash/presentation/screens/splash_sc
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const CampusConnectApp());
+  runApp(
+    const CampusConnectApp(),
+  );
 }
 
 class CampusConnectApp extends StatelessWidget {

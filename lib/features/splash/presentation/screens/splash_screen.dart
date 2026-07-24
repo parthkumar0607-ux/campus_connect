@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:dio/dio.dart';
+
+import 'package:campus_connect_v2/core/network/api_client.dart';
 import 'package:campus_connect_v2/core/services/storage_service.dart';
 import 'package:campus_connect_v2/features/auth/presentation/screens/login_screen.dart';
 import 'package:campus_connect_v2/features/navigation/presentation/screens/main_navigation_screen.dart';
@@ -25,14 +28,32 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (!mounted) return;
 
-    if (token != null && token.isNotEmpty) {
+    if (token == null || token.isEmpty) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const LoginScreen(),
+        ),
+      );
+      return;
+    }
+
+    try {
+      await ApiClient.dio.get("/users/me");
+
+      if (!mounted) return;
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) => const MainNavigationScreen(),
         ),
       );
-    } else {
+    } on DioException {
+      await StorageService.logout();
+
+      if (!mounted) return;
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

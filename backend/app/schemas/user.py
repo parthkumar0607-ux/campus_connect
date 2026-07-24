@@ -11,6 +11,11 @@ class UserCreate(BaseModel):
     course: Optional[str] = None
     year: Optional[str] = None
 
+class UserUpdate(BaseModel):
+    name: str
+    college: str
+    course: str
+    year: str
 
 class UserResponse(BaseModel):
     id: int

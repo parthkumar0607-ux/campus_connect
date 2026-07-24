@@ -2,16 +2,36 @@ import 'package:flutter/material.dart';
 
 import 'package:campus_connect_v2/core/services/storage_service.dart';
 import 'package:campus_connect_v2/features/auth/presentation/screens/login_screen.dart';
+import 'package:campus_connect_v2/features/profile/data/models/user_model.dart';
+import 'package:campus_connect_v2/features/profile/data/repositories/profile_repository.dart';
+import 'package:campus_connect_v2/features/profile/presentation/screens/edit_profile_screen.dart';
 
-import '../widgets/profile_stat_card.dart';
-
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
-  Future<void> logout(BuildContext context) async {
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final ProfileRepository repository = ProfileRepository();
+
+  late Future<UserModel> profileFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    loadProfile();
+  }
+
+  void loadProfile() {
+    profileFuture = repository.getProfile();
+  }
+
+  Future<void> logout() async {
     await StorageService.logout();
 
-    if (!context.mounted) return;
+    if (!mounted) return;
 
     Navigator.pushAndRemoveUntil(
       context,
@@ -22,6 +42,23 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  Future<void> openEditProfile(UserModel user) async {
+    final updated = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => EditProfileScreen(
+          user: user,
+        ),
+      ),
+    );
+
+    if (updated == true) {
+      setState(() {
+        loadProfile();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,128 +66,96 @@ class ProfileScreen extends StatelessWidget {
         title: const Text("Profile"),
         centerTitle: true,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          const CircleAvatar(
-            radius: 55,
-            child: Icon(
-              Icons.person,
-              size: 60,
+      body: FutureBuilder<UserModel>(
+        future: profileFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState ==
+              ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
+
+          if (!snapshot.hasData) {
+            return const Center(
+              child: Text("No profile found"),
+            );
+          }
+
+          final user = snapshot.data!;
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                const CircleAvatar(
+                  radius: 55,
+                  child: Icon(
+                    Icons.person,
+                    size: 60,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                Text(
+                  user.name,
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                Text(
+                  user.email,
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                Text(
+                  "${user.course ?? "-"} • ${user.college ?? "-"}",
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 16,
+                  ),
+                ),
+
+                const SizedBox(height: 40),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: () => openEditProfile(user),
+                    icon: const Icon(Icons.edit),
+                    label: const Text("Edit Profile"),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.tonalIcon(
+                    onPressed: logout,
+                    icon: const Icon(Icons.logout),
+                    label: const Text("Logout"),
+                  ),
+                ),
+              ],
             ),
-          ),
-
-          const SizedBox(height: 18),
-
-          const Text(
-            "Parth Kumar",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
-          const Text(
-            "BCA • RKGIT",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 16,
-            ),
-          ),
-
-          const SizedBox(height: 30),
-
-          const Row(
-            children: [
-              ProfileStatCard(
-                title: "Projects",
-                value: "2",
-              ),
-              SizedBox(width: 12),
-              ProfileStatCard(
-                title: "Skills",
-                value: "6",
-              ),
-              SizedBox(width: 12),
-              ProfileStatCard(
-                title: "Teams",
-                value: "1",
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 30),
-
-          const Text(
-            "Skills",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-          const SizedBox(height: 12),
-
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: const [
-              Chip(label: Text("Flutter")),
-              Chip(label: Text("Python")),
-              Chip(label: Text("C")),
-              Chip(label: Text("HTML")),
-              Chip(label: Text("CSS")),
-              Chip(label: Text("JavaScript")),
-            ],
-          ),
-
-          const SizedBox(height: 30),
-
-          const Text(
-            "Projects",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-          const SizedBox(height: 12),
-
-          const Card(
-            child: ListTile(
-              leading: Icon(Icons.mobile_friendly),
-              title: Text("CampusConnect"),
-              subtitle: Text("College Community App"),
-            ),
-          ),
-
-          const Card(
-            child: ListTile(
-              leading: Icon(Icons.school),
-              title: Text("Student Management System"),
-              subtitle: Text("Built using C"),
-            ),
-          ),
-
-          const SizedBox(height: 30),
-
-          FilledButton(
-            onPressed: () {},
-            child: const Text("Edit Profile"),
-          ),
-
-          const SizedBox(height: 16),
-
-          FilledButton.tonalIcon(
-            onPressed: () => logout(context),
-            icon: const Icon(Icons.logout),
-            label: const Text("Logout"),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
