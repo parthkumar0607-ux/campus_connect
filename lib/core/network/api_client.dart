@@ -17,13 +17,9 @@ class ApiClient {
         onRequest: (options, handler) async {
           final token = await StorageService.getToken();
 
-          print("TOKEN FROM STORAGE: $token");
-
           if (token != null && token.isNotEmpty) {
             options.headers["Authorization"] = "Bearer $token";
           }
-
-          print("REQUEST HEADERS: ${options.headers}");
 
           handler.next(options);
         },
