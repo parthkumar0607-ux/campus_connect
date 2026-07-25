@@ -31,4 +31,10 @@ class TeamRemoteDataSource {
 
     return TeamModel.fromJson(response.data);
   }
+
+  Future<void> joinTeam(int teamId) async {
+    await ApiClient.dio.post(
+      "/teams/$teamId/join",
+    );
+  }
 }

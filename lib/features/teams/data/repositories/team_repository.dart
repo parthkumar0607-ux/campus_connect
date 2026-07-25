@@ -22,4 +22,8 @@ class TeamRepository {
       maxMembers: maxMembers,
     );
   }
+
+  Future<void> joinTeam(int teamId) async {
+    await remoteDataSource.joinTeam(teamId);
+  }
 }
