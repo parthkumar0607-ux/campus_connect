@@ -5,6 +5,7 @@ from app.database.database import Base, engine
 from app.models.user import User
 from app.routers.auth import router as auth_router
 from app.routers.users import router as users_router
+from app.models.team_member import TeamMember
 
 #Base.metadata.create_all(bind=engine)
 
