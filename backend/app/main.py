@@ -6,7 +6,7 @@ from app.models.user import User
 from app.routers.auth import router as auth_router
 from app.routers.users import router as users_router
 
-Base.metadata.create_all(bind=engine)
+#Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="CampusConnect API",
