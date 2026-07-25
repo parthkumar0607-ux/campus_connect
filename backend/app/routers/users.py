@@ -8,6 +8,7 @@ from app.schemas.user import (
     UserResponse,
     UserUpdate,
 )
+from app.services.user_service import UserService
 
 router = APIRouter(
     prefix="/users",
@@ -22,7 +23,9 @@ router = APIRouter(
 def get_my_profile(
     current_user: User = Depends(get_current_user),
 ):
-    return current_user
+    return UserService.get_profile(
+        current_user,
+    )
 
 
 @router.put(
@@ -34,12 +37,8 @@ def update_my_profile(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    current_user.name = user_data.name
-    current_user.college = user_data.college
-    current_user.course = user_data.course
-    current_user.year = user_data.year
-
-    db.commit()
-    db.refresh(current_user)
-
-    return current_user
+    return UserService.update_profile(
+        db,
+        current_user,
+        user_data,
+    )
