@@ -37,14 +37,20 @@ def register(
             detail="Email already registered",
         )
 
+    print("=" * 50)
+    print("USER DATA:", user.model_dump())
+    print("PASSWORD:", repr(user.password))
+    print("PASSWORD LENGTH:", len(user.password))
+    print("=" * 50)
+
     new_user = User(
-        name=user.name,
-        email=user.email,
-        password=hash_password(user.password),
-        college=user.college,
-        course=user.course,
-        year=user.year,
-    )
+    name=user.name,
+    email=user.email,
+    password=hash_password(user.password),
+    college=user.college,
+    course=user.course,
+    year=user.year,
+)
 
     db.add(new_user)
     db.commit()
