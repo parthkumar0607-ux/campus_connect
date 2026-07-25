@@ -16,6 +16,12 @@ pwd_context = CryptContext(
 
 
 def hash_password(password: str) -> str:
+    print("=" * 60)
+    print("PASSWORD TYPE:", type(password))
+    print("PASSWORD:", repr(password))
+    print("PASSWORD LENGTH:", len(password))
+    print("=" * 60)
+
     return pwd_context.hash(password)
 
 
@@ -53,5 +59,6 @@ def decode_access_token(token: str):
             algorithms=[ALGORITHM],
         )
         return payload
+
     except JWTError:
         return None
