@@ -22,3 +22,11 @@ class TeamResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class TeamMemberResponse(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
