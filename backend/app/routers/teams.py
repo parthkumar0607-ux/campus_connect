@@ -55,6 +55,18 @@ def join_team(
         current_user,
     )
 
+@router.delete("/{team_id}/leave")
+def leave_team(
+    team_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return TeamService.leave_team(
+        db,
+        team_id,
+        current_user,
+    )
+
 
 @router.get(
     "/{team_id}/members",

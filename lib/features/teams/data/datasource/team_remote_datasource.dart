@@ -1,5 +1,6 @@
 import 'package:campus_connect_v2/core/network/api_client.dart';
 
+import '../models/team_member_model.dart';
 import '../models/team_model.dart';
 
 class TeamRemoteDataSource {
@@ -36,5 +37,19 @@ class TeamRemoteDataSource {
     await ApiClient.dio.post(
       "/teams/$teamId/join",
     );
+  }
+
+  Future<List<TeamMemberModel>> getTeamMembers(
+    int teamId,
+  ) async {
+    final response = await ApiClient.dio.get(
+      "/teams/$teamId/members",
+    );
+
+    return (response.data as List)
+        .map(
+          (member) => TeamMemberModel.fromJson(member),
+        )
+        .toList();
   }
 }

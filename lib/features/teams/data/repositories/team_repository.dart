@@ -1,4 +1,5 @@
 import '../datasource/team_remote_datasource.dart';
+import '../models/team_member_model.dart';
 import '../models/team_model.dart';
 
 class TeamRepository {
@@ -25,5 +26,13 @@ class TeamRepository {
 
   Future<void> joinTeam(int teamId) async {
     await remoteDataSource.joinTeam(teamId);
+  }
+
+  Future<List<TeamMemberModel>> getTeamMembers(
+    int teamId,
+  ) async {
+    return await remoteDataSource.getTeamMembers(
+      teamId,
+    );
   }
 }

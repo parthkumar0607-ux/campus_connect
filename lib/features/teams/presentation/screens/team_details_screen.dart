@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
+import '../../data/models/team_member_model.dart';
 import '../../data/models/team_model.dart';
 import '../../data/repositories/team_repository.dart';
 
@@ -22,6 +23,16 @@ class _TeamDetailsScreenState
   final TeamRepository repository = TeamRepository();
 
   bool isJoining = false;
+
+  late Future<List<TeamMemberModel>> membersFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    membersFuture = repository.getTeamMembers(
+      widget.team.id,
+    );
+  }
 
   Future<void> joinTeam() async {
     try {
@@ -137,7 +148,61 @@ class _TeamDetailsScreenState
               ],
             ),
 
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
+
+            const Text(
+              "Team Members",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            FutureBuilder<List<TeamMemberModel>>(
+              future: membersFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child:
+                          CircularProgressIndicator(),
+                    ),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return Text(
+                    snapshot.error.toString(),
+                  );
+                }
+
+                final members =
+                    snapshot.data ?? [];
+
+                if (members.isEmpty) {
+                  return const Text(
+                    "No members yet",
+                  );
+                }
+
+                return Column(
+                  children: members.map((member) {
+                    return ListTile(
+                      leading: const CircleAvatar(
+                        child: Icon(Icons.person),
+                      ),
+                      title: Text(member.name),
+                    );
+                  }).toList(),
+                );
+              },
+            ),
+
+            const SizedBox(height: 30),
 
             SizedBox(
               width: double.infinity,

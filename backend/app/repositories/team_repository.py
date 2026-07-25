@@ -56,6 +56,13 @@ class TeamRepository:
         db.add(member)
 
     @staticmethod
+    def remove_member(
+        db: Session,
+        member: TeamMember,
+    ):
+        db.delete(member)
+
+    @staticmethod
     def get_team_members(
         db: Session,
         team_id: int,
