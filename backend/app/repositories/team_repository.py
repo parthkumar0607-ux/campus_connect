@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.models.team import Team
 from app.models.team_member import TeamMember
+from app.models.user import User
 
 
 class TeamRepository:
@@ -53,6 +54,23 @@ class TeamRepository:
         member: TeamMember,
     ):
         db.add(member)
+
+    @staticmethod
+    def get_team_members(
+        db: Session,
+        team_id: int,
+    ):
+        return (
+            db.query(User)
+            .join(
+                TeamMember,
+                User.id == TeamMember.user_id,
+            )
+            .filter(
+                TeamMember.team_id == team_id,
+            )
+            .all()
+        )
 
     @staticmethod
     def commit(db: Session):

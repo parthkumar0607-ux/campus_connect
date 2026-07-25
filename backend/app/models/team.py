@@ -7,6 +7,7 @@ from sqlalchemy import (
     Integer,
     String,
 )
+from sqlalchemy.orm import relationship
 
 from app.database.database import Base
 
@@ -53,4 +54,13 @@ class Team(Base):
     created_by = Column(
         Integer,
         ForeignKey("users.id"),
+    )
+
+    creator = relationship(
+        "User",
+    )
+
+    members = relationship(
+        "TeamMember",
+        cascade="all, delete-orphan",
     )

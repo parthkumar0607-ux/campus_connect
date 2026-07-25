@@ -101,3 +101,24 @@ class TeamService:
         return {
             "message": "Joined team successfully"
         }
+
+    @staticmethod
+    def get_team_members(
+        db: Session,
+        team_id: int,
+    ):
+        team = TeamRepository.get_team_by_id(
+            db,
+            team_id,
+        )
+
+        if not team:
+            raise HTTPException(
+                status_code=404,
+                detail="Team not found",
+            )
+
+        return TeamRepository.get_team_members(
+            db,
+            team_id,
+        )

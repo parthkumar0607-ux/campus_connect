@@ -6,6 +6,7 @@ from app.database.database import get_db
 from app.models.user import User
 from app.schemas.team import (
     TeamCreate,
+    TeamMemberResponse,
     TeamResponse,
 )
 from app.services.team_service import TeamService
@@ -52,4 +53,18 @@ def join_team(
         db,
         team_id,
         current_user,
+    )
+
+
+@router.get(
+    "/{team_id}/members",
+    response_model=list[TeamMemberResponse],
+)
+def get_team_members(
+    team_id: int,
+    db: Session = Depends(get_db),
+):
+    return TeamService.get_team_members(
+        db,
+        team_id,
     )
