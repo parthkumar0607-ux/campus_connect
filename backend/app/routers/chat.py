@@ -13,6 +13,7 @@ from app.schemas.message import (
     MessageResponse,
 )
 from app.services.message_service import MessageService
+from app.schemas.chat import ChatRoomResponse
 
 router = APIRouter(
     prefix="/chat",
@@ -34,6 +35,19 @@ def send_message(
         db,
         team_id,
         message,
+        current_user,
+    )
+
+@router.get(
+    "",
+    response_model=list[ChatRoomResponse],
+)
+def get_chat_rooms(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return MessageService.get_chat_rooms(
+        db,
         current_user,
     )
 

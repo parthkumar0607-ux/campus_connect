@@ -83,3 +83,13 @@ class MessageService:
             db,
             team_id,
         )
+
+    @staticmethod
+    def get_chat_rooms(
+        db: Session,
+        current_user: User,
+    ):
+        return MessageRepository.get_user_chat_rooms(
+            db,
+            current_user.id,
+        )
