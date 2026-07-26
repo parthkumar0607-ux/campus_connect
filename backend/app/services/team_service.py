@@ -230,7 +230,7 @@ class TeamService:
             team,
         )
 
-        @staticmethod
+    @staticmethod
     def delete_team(
         db: Session,
         team_id: int,
