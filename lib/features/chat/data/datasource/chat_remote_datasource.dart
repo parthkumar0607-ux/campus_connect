@@ -1,8 +1,21 @@
 import '../../../../core/network/api_client.dart';
 
+import '../models/chat_room_model.dart';
 import '../models/message_model.dart';
 
 class ChatRemoteDataSource {
+  Future<List<ChatRoomModel>>
+      getChatRooms() async {
+    final response =
+        await ApiClient.dio.get("/chat");
+
+    return (response.data as List)
+        .map(
+          (e) => ChatRoomModel.fromJson(e),
+        )
+        .toList();
+  }
+
   Future<List<MessageModel>> getMessages(
     int teamId,
   ) async {
@@ -13,9 +26,7 @@ class ChatRemoteDataSource {
 
     return (response.data as List)
         .map(
-          (e) => MessageModel.fromJson(
-            e,
-          ),
+          (e) => MessageModel.fromJson(e),
         )
         .toList();
   }
