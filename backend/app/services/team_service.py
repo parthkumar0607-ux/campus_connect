@@ -230,36 +230,37 @@ class TeamService:
             team,
         )
 
-    @staticmethod
-def delete_team(
-    db: Session,
-    team_id: int,
-    current_user: User,
-):
-    team = TeamRepository.get_team_by_id(
-        db,
-        team_id,
-    )
-
-    if not team:
-        raise HTTPException(
-            status_code=404,
-            detail="Team not found",
+        @staticmethod
+    def delete_team(
+        db: Session,
+        team_id: int,
+        current_user: User,
+    ):
+        team = TeamRepository.get_team_by_id(
+            db,
+            team_id,
         )
 
-    if team.created_by != current_user.id:
-        raise HTTPException(
-            status_code=403,
-            detail="Only the creator can delete this team.",
+        if not team:
+            raise HTTPException(
+                status_code=404,
+                detail="Team not found",
+            )
+
+        if team.created_by != current_user.id:
+            raise HTTPException(
+                status_code=403,
+                detail="Only the creator can delete this team.",
+            )
+
+        TeamRepository.delete_team(
+            db,
+            team,
         )
 
-    TeamRepository.delete_team(
-        db,
-        team,
-    )
+        TeamRepository.commit(db)
 
-    TeamRepository.commit(db)
+        return {
+            "message": "Team deleted successfully",
+        }
 
-    return {
-        "message": "Team deleted successfully",
-    }
