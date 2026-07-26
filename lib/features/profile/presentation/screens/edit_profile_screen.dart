@@ -18,12 +18,26 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState
     extends State<EditProfileScreen> {
-  final ProfileRepository repository = ProfileRepository();
+  final ProfileRepository repository =
+      ProfileRepository();
 
-  late final TextEditingController nameController;
-  late final TextEditingController collegeController;
-  late final TextEditingController courseController;
-  late final TextEditingController yearController;
+  late final TextEditingController
+      nameController;
+
+  late final TextEditingController
+      collegeController;
+
+  late final TextEditingController
+      courseController;
+
+  late final TextEditingController
+      yearController;
+
+  late final TextEditingController
+      bioController;
+
+  late final TextEditingController
+      skillsController;
 
   bool isLoading = false;
 
@@ -31,20 +45,38 @@ class _EditProfileScreenState
   void initState() {
     super.initState();
 
-    nameController = TextEditingController(
+    nameController =
+        TextEditingController(
       text: widget.user.name,
     );
 
-    collegeController = TextEditingController(
-      text: widget.user.college ?? "",
+    collegeController =
+        TextEditingController(
+      text:
+          widget.user.college ?? "",
     );
 
-    courseController = TextEditingController(
-      text: widget.user.course ?? "",
+    courseController =
+        TextEditingController(
+      text:
+          widget.user.course ?? "",
     );
 
-    yearController = TextEditingController(
-      text: widget.user.year ?? "",
+    yearController =
+        TextEditingController(
+      text:
+          widget.user.year ?? "",
+    );
+
+    bioController =
+        TextEditingController(
+      text: widget.user.bio ?? "",
+    );
+
+    skillsController =
+        TextEditingController(
+      text:
+          widget.user.skills ?? "",
     );
   }
 
@@ -54,6 +86,8 @@ class _EditProfileScreenState
     collegeController.dispose();
     courseController.dispose();
     yearController.dispose();
+    bioController.dispose();
+    skillsController.dispose();
     super.dispose();
   }
 
@@ -64,17 +98,31 @@ class _EditProfileScreenState
 
     try {
       await repository.updateProfile(
-        name: nameController.text.trim(),
-        college: collegeController.text.trim(),
-        course: courseController.text.trim(),
-        year: yearController.text.trim(),
+        name:
+            nameController.text.trim(),
+        college:
+            collegeController.text
+                .trim(),
+        course:
+            courseController.text
+                .trim(),
+        year:
+            yearController.text
+                .trim(),
+        bio: bioController.text.trim(),
+        skills:
+            skillsController.text
+                .trim(),
       );
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
         const SnackBar(
-          content: Text("Profile updated successfully"),
+          content: Text(
+            "Profile updated successfully 🎉",
+          ),
         ),
       );
 
@@ -82,66 +130,151 @@ class _EditProfileScreenState
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
         SnackBar(
-          content: Text(e.toString()),
+          content: Text(
+            e.toString(),
+          ),
         ),
       );
-    }
-
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
+  InputDecoration decoration(
+    String label,
+    IconData icon,
+  ) {
+    return InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon),
+      border: OutlineInputBorder(
+        borderRadius:
+            BorderRadius.circular(14),
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(
+    BuildContext context,
+  ) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Profile"),
+        title: const Text(
+          "Edit Profile",
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: ListView(
+      body: SingleChildScrollView(
+        padding:
+            const EdgeInsets.all(20),
+        child: Column(
           children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: "Name",
+            const CircleAvatar(
+              radius: 50,
+              child: Icon(
+                Icons.person,
+                size: 50,
               ),
             ),
-            const SizedBox(height: 16),
+
+            const SizedBox(height: 30),
+
             TextField(
+              controller:
+                  nameController,
+              decoration: decoration(
+                "Name",
+                Icons.person,
+              ),
+            ),
+
+            const SizedBox(height: 18),
+
+            TextField(
+              controller:
+                  bioController,
+              maxLines: 4,
+              decoration: decoration(
+                "Bio",
+                Icons.info,
+              ),
+            ),
+
+            const SizedBox(height: 18),
+                        TextField(
               controller: collegeController,
-              decoration: const InputDecoration(
-                labelText: "College",
+              decoration: decoration(
+                "College",
+                Icons.school,
               ),
             ),
-            const SizedBox(height: 16),
+
+            const SizedBox(height: 18),
+
             TextField(
               controller: courseController,
-              decoration: const InputDecoration(
-                labelText: "Course",
+              decoration: decoration(
+                "Course",
+                Icons.menu_book,
               ),
             ),
-            const SizedBox(height: 16),
+
+            const SizedBox(height: 18),
+
             TextField(
               controller: yearController,
-              decoration: const InputDecoration(
-                labelText: "Year",
+              decoration: decoration(
+                "Year",
+                Icons.calendar_today,
               ),
             ),
-            const SizedBox(height: 30),
+
+            const SizedBox(height: 18),
+
+            TextField(
+              controller: skillsController,
+              maxLines: 3,
+              decoration: decoration(
+                "Skills",
+                Icons.code,
+              ),
+            ),
+
+            const SizedBox(height: 35),
+
             SizedBox(
               width: double.infinity,
-              height: 50,
-              child: FilledButton(
-                onPressed: isLoading ? null : saveProfile,
-                child: isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text("Save Changes"),
+              height: 55,
+              child: FilledButton.icon(
+                onPressed:
+                    isLoading
+                        ? null
+                        : saveProfile,
+                icon: isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child:
+                            CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(
+                        Icons.save,
+                      ),
+                label: Text(
+                  isLoading
+                      ? "Saving..."
+                      : "Save Changes",
+                ),
               ),
             ),
           ],

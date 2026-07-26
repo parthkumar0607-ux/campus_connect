@@ -5,6 +5,9 @@ class UserModel {
   final String? college;
   final String? course;
   final String? year;
+  final String? bio;
+  final String? skills;
+  final String? profileImage;
 
   UserModel({
     required this.id,
@@ -13,6 +16,9 @@ class UserModel {
     this.college,
     this.course,
     this.year,
+    this.bio,
+    this.skills,
+    this.profileImage,
   });
 
   factory UserModel.fromJson(
@@ -25,6 +31,20 @@ class UserModel {
       college: json["college"],
       course: json["course"],
       year: json["year"],
+      bio: json["bio"],
+      skills: json["skills"],
+      profileImage: json["profile_image"],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "name": name,
+      "college": college,
+      "course": course,
+      "year": year,
+      "bio": bio,
+      "skills": skills,
+    };
   }
 }

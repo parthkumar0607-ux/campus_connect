@@ -8,7 +8,9 @@ class ProfileRemoteDataSource {
       "/users/me",
     );
 
-    return UserModel.fromJson(response.data);
+    return UserModel.fromJson(
+      response.data,
+    );
   }
 
   Future<UserModel> updateProfile({
@@ -16,6 +18,8 @@ class ProfileRemoteDataSource {
     required String college,
     required String course,
     required String year,
+    required String bio,
+    required String skills,
   }) async {
     final response = await ApiClient.dio.put(
       "/users/me",
@@ -24,9 +28,13 @@ class ProfileRemoteDataSource {
         "college": college,
         "course": course,
         "year": year,
+        "bio": bio,
+        "skills": skills,
       },
     );
 
-    return UserModel.fromJson(response.data);
+    return UserModel.fromJson(
+      response.data,
+    );
   }
 }

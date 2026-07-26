@@ -6,7 +6,7 @@ class ProfileRepository {
       ProfileRemoteDataSource();
 
   Future<UserModel> getProfile() async {
-    return await remoteDataSource.getProfile();
+    return remoteDataSource.getProfile();
   }
 
   Future<UserModel> updateProfile({
@@ -14,12 +14,16 @@ class ProfileRepository {
     required String college,
     required String course,
     required String year,
+    required String bio,
+    required String skills,
   }) async {
-    return await remoteDataSource.updateProfile(
+    return remoteDataSource.updateProfile(
       name: name,
       college: college,
       course: course,
       year: year,
+      bio: bio,
+      skills: skills,
     );
   }
 }
