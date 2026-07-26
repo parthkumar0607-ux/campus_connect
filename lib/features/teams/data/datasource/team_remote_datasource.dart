@@ -8,9 +8,7 @@ class TeamRemoteDataSource {
     final response = await ApiClient.dio.get("/teams");
 
     return (response.data as List)
-        .map(
-          (team) => TeamModel.fromJson(team),
-        )
+        .map((team) => TeamModel.fromJson(team))
         .toList();
   }
 
@@ -39,6 +37,12 @@ class TeamRemoteDataSource {
     );
   }
 
+  Future<void> leaveTeam(int teamId) async {
+    await ApiClient.dio.delete(
+      "/teams/$teamId/leave",
+    );
+  }
+
   Future<List<TeamMemberModel>> getTeamMembers(
     int teamId,
   ) async {
@@ -47,9 +51,7 @@ class TeamRemoteDataSource {
     );
 
     return (response.data as List)
-        .map(
-          (member) => TeamMemberModel.fromJson(member),
-        )
+        .map((member) => TeamMemberModel.fromJson(member))
         .toList();
   }
 }

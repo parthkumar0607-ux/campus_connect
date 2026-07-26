@@ -28,6 +28,10 @@ class TeamRepository {
     await remoteDataSource.joinTeam(teamId);
   }
 
+  Future<void> leaveTeam(int teamId) async {
+    await remoteDataSource.leaveTeam(teamId);
+  }
+
   Future<List<TeamMemberModel>> getTeamMembers(
     int teamId,
   ) async {

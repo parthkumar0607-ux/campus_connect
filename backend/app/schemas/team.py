@@ -30,3 +30,7 @@ class TeamMemberResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class TeamStatusResponse(BaseModel):
+    joined: bool
+    is_creator: bool        

@@ -1,6 +1,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-
+from app.schemas.team import (
+    TeamCreate,
+    TeamMemberResponse,
+    TeamResponse,
+    TeamStatusResponse,
+)
 from app.core.dependencies import get_current_user
 from app.database.database import get_db
 from app.models.user import User
@@ -79,4 +84,19 @@ def get_team_members(
     return TeamService.get_team_members(
         db,
         team_id,
+    )
+
+@router.get(
+    "/{team_id}/status",
+    response_model=TeamStatusResponse,
+)
+def get_team_status(
+    team_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return TeamService.get_team_status(
+        db,
+        team_id,
+        current_user,
     )
