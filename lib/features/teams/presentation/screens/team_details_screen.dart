@@ -1,3 +1,4 @@
+import '../../../chat/presentation/screens/chat_detail_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -10,28 +11,20 @@ import 'edit_team_screen.dart';
 class TeamDetailsScreen extends StatefulWidget {
   final TeamModel team;
 
-  const TeamDetailsScreen({
-    super.key,
-    required this.team,
-  });
+  const TeamDetailsScreen({super.key, required this.team});
 
   @override
-  State<TeamDetailsScreen> createState() =>
-      _TeamDetailsScreenState();
+  State<TeamDetailsScreen> createState() => _TeamDetailsScreenState();
 }
 
-class _TeamDetailsScreenState
-    extends State<TeamDetailsScreen> {
-  final TeamRepository repository =
-      TeamRepository();
+class _TeamDetailsScreenState extends State<TeamDetailsScreen> {
+  final TeamRepository repository = TeamRepository();
 
   bool isLoading = false;
 
-  late Future<List<TeamMemberModel>>
-      membersFuture;
+  late Future<List<TeamMemberModel>> membersFuture;
 
-  late Future<TeamStatusModel>
-      statusFuture;
+  late Future<TeamStatusModel> statusFuture;
 
   @override
   void initState() {
@@ -40,25 +33,15 @@ class _TeamDetailsScreenState
   }
 
   void refreshData() {
-    membersFuture =
-        repository.getTeamMembers(
-      widget.team.id,
-    );
+    membersFuture = repository.getTeamMembers(widget.team.id);
 
-    statusFuture =
-        repository.getTeamStatus(
-      widget.team.id,
-    );
+    statusFuture = repository.getTeamStatus(widget.team.id);
   }
 
   Future<void> openEditTeam() async {
     final updated = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => EditTeamScreen(
-          team: widget.team,
-        ),
-      ),
+      MaterialPageRoute(builder: (_) => EditTeamScreen(team: widget.team)),
     );
 
     if (updated == true && mounted) {
@@ -72,19 +55,12 @@ class _TeamDetailsScreenState
         isLoading = true;
       });
 
-      await repository.joinTeam(
-        widget.team.id,
-      );
+      await repository.joinTeam(widget.team.id);
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Joined team successfully 🎉",
-          ),
-        ),
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Joined team successfully 🎉")),
       );
 
       Navigator.pop(context, true);
@@ -105,19 +81,12 @@ class _TeamDetailsScreenState
         isLoading = true;
       });
 
-      await repository.leaveTeam(
-        widget.team.id,
-      );
+      await repository.leaveTeam(widget.team.id);
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Left team successfully 👋",
-          ),
-        ),
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Left team successfully 👋")),
       );
 
       Navigator.pop(context, true);
@@ -132,25 +101,30 @@ class _TeamDetailsScreenState
     }
   }
 
+  void openTeamChat() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ChatDetailScreen(
+          teamId: widget.team.id,
+          teamName: widget.team.title,
+        ),
+      ),
+    );
+  }
+
   void showError(DioException e) {
     if (!mounted) return;
 
-    String message =
-        "Something went wrong";
+    String message = "Something went wrong";
 
-    if (e.response?.data is Map &&
-        e.response!.data["detail"] !=
-            null) {
-      message =
-          e.response!.data["detail"];
+    if (e.response?.data is Map && e.response!.data["detail"] != null) {
+      message = e.response!.data["detail"];
     }
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -158,37 +132,22 @@ class _TeamDetailsScreenState
     final team = widget.team;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Team Details",
-        ),
-      ),
+      appBar: AppBar(title: const Text("Team Details")),
       body: SingleChildScrollView(
-        padding:
-            const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               team.title,
-              style:
-                  const TextStyle(
-                fontSize: 28,
-                fontWeight:
-                    FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 20),
 
             const Text(
               "Description",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight:
-                    FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 8),
@@ -199,20 +158,12 @@ class _TeamDetailsScreenState
 
             const Text(
               "Tech Stack",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight:
-                    FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 8),
 
-            Chip(
-              label: Text(
-                team.techStack,
-              ),
-            ),
+            Chip(label: Text(team.techStack)),
 
             const SizedBox(height: 24),
 
@@ -220,9 +171,7 @@ class _TeamDetailsScreenState
               children: [
                 const Icon(Icons.groups),
                 const SizedBox(width: 10),
-                Text(
-                  "${team.currentMembers}/${team.maxMembers} Members",
-                ),
+                Text("${team.currentMembers}/${team.maxMembers} Members"),
               ],
             ),
 
@@ -230,56 +179,38 @@ class _TeamDetailsScreenState
 
             const Text(
               "Team Members",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight:
-                    FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 12),
-                        FutureBuilder<List<TeamMemberModel>>(
+            FutureBuilder<List<TeamMemberModel>>(
               future: membersFuture,
               builder: (context, snapshot) {
-                if (snapshot.connectionState ==
-                    ConnectionState.waiting) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
                     child: Padding(
                       padding: EdgeInsets.all(16),
-                      child:
-                          CircularProgressIndicator(),
+                      child: CircularProgressIndicator(),
                     ),
                   );
                 }
 
                 if (snapshot.hasError) {
-                  return Text(
-                    snapshot.error.toString(),
-                  );
+                  return Text(snapshot.error.toString());
                 }
 
-                final members =
-                    snapshot.data ?? [];
+                final members = snapshot.data ?? [];
 
                 if (members.isEmpty) {
-                  return const Text(
-                    "No members yet",
-                  );
+                  return const Text("No members yet");
                 }
 
                 return Column(
-                  children:
-                      members.map((member) {
+                  children: members.map((member) {
                     return Card(
                       child: ListTile(
-                        leading:
-                            const CircleAvatar(
-                          child: Icon(
-                            Icons.person,
-                          ),
-                        ),
-                        title:
-                            Text(member.name),
+                        leading: const CircleAvatar(child: Icon(Icons.person)),
+                        title: Text(member.name),
                       ),
                     );
                   }).toList(),
@@ -292,72 +223,81 @@ class _TeamDetailsScreenState
             FutureBuilder<TeamStatusModel>(
               future: statusFuture,
               builder: (context, snapshot) {
-                if (snapshot.connectionState ==
-                    ConnectionState.waiting) {
-                  return const Center(
-                    child:
-                        CircularProgressIndicator(),
-                  );
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 if (snapshot.hasError) {
-                  return Text(
-                    snapshot.error.toString(),
-                  );
+                  return Text(snapshot.error.toString());
                 }
 
-                final status =
-                    snapshot.data!;
+                final status = snapshot.data!;
 
                 if (status.isCreator) {
-                  return SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: ElevatedButton.icon(
-                      onPressed:
-                          openEditTeam,
-                      icon: const Icon(
-                        Icons.edit,
+                  return Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        height: 55,
+                        child: ElevatedButton.icon(
+                          onPressed: openTeamChat,
+                          icon: const Icon(Icons.chat),
+                          label: const Text("Open Team Chat"),
+                        ),
                       ),
-                      label: const Text(
-                        "Manage Team",
+
+                      const SizedBox(height: 12),
+
+                      SizedBox(
+                        width: double.infinity,
+                        height: 55,
+                        child: ElevatedButton.icon(
+                          onPressed: openEditTeam,
+                          icon: const Icon(Icons.edit),
+                          label: const Text("Manage Team"),
+                        ),
                       ),
-                    ),
+                    ],
                   );
                 }
 
                 if (status.joined) {
-                  return SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: ElevatedButton.icon(
-                      style:
-                          ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Colors.red,
+                  return Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        height: 55,
+                        child: ElevatedButton.icon(
+                          onPressed: openTeamChat,
+                          icon: const Icon(Icons.chat),
+                          label: const Text("Open Team Chat"),
+                        ),
                       ),
-                      onPressed:
-                          isLoading
-                              ? null
-                              : leaveTeam,
-                      icon: const Icon(
-                        Icons.logout,
+
+                      const SizedBox(height: 12),
+
+                      SizedBox(
+                        width: double.infinity,
+                        height: 55,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                          onPressed: isLoading ? null : leaveTeam,
+                          icon: const Icon(Icons.logout),
+                          label: isLoading
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Text("Leave Team"),
+                        ),
                       ),
-                      label: isLoading
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child:
-                                  CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color:
-                                    Colors.white,
-                              ),
-                            )
-                          : const Text(
-                              "Leave Team",
-                            ),
-                    ),
+                    ],
                   );
                 }
 
@@ -365,27 +305,18 @@ class _TeamDetailsScreenState
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton.icon(
-                    onPressed:
-                        isLoading
-                            ? null
-                            : joinTeam,
-                    icon: const Icon(
-                      Icons.group_add,
-                    ),
+                    onPressed: isLoading ? null : joinTeam,
+                    icon: const Icon(Icons.group_add),
                     label: isLoading
                         ? const SizedBox(
                             width: 20,
                             height: 20,
-                            child:
-                                CircularProgressIndicator(
+                            child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color:
-                                  Colors.white,
+                              color: Colors.white,
                             ),
                           )
-                        : const Text(
-                            "Join Team",
-                          ),
+                        : const Text("Join Team"),
                   ),
                 );
               },
