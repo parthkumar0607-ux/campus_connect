@@ -63,6 +63,13 @@ class TeamRepository:
         db.delete(member)
 
     @staticmethod
+    def delete_team(
+        db: Session,
+        team: Team,
+    ):
+        db.delete(team)
+
+    @staticmethod
     def update_team(
         db: Session,
         team: Team,
