@@ -5,13 +5,13 @@ from fastapi import FastAPI
 from app.models.user import User
 from app.models.team import Team
 from app.database.database import Base, engine
-from fastapi.middleware.cors import CORSMiddleware
 
 
 from app.routers.users import router as users_router
 from app.models.team_member import TeamMember
 from app.models.event import Event
 from app.models.event_attendee import EventAttendee
+from fastapi.middleware.cors import CORSMiddleware
 
 Base.metadata.create_all(bind=engine)
 
