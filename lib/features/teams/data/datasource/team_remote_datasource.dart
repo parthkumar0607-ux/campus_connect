@@ -32,6 +32,26 @@ class TeamRemoteDataSource {
     return TeamModel.fromJson(response.data);
   }
 
+  Future<TeamModel> updateTeam({
+    required int teamId,
+    required String title,
+    required String description,
+    required String techStack,
+    required int maxMembers,
+  }) async {
+    final response = await ApiClient.dio.put(
+      "/teams/$teamId",
+      data: {
+        "title": title,
+        "description": description,
+        "tech_stack": techStack,
+        "max_members": maxMembers,
+      },
+    );
+
+    return TeamModel.fromJson(response.data);
+  }
+
   Future<void> joinTeam(int teamId) async {
     await ApiClient.dio.post(
       "/teams/$teamId/join",

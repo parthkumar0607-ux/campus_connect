@@ -25,6 +25,22 @@ class TeamRepository {
     );
   }
 
+  Future<TeamModel> updateTeam({
+    required int teamId,
+    required String title,
+    required String description,
+    required String techStack,
+    required int maxMembers,
+  }) async {
+    return await remoteDataSource.updateTeam(
+      teamId: teamId,
+      title: title,
+      description: description,
+      techStack: techStack,
+      maxMembers: maxMembers,
+    );
+  }
+
   Future<void> joinTeam(int teamId) async {
     await remoteDataSource.joinTeam(teamId);
   }
