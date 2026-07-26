@@ -2,6 +2,7 @@ import 'package:campus_connect_v2/core/network/api_client.dart';
 
 import '../models/team_member_model.dart';
 import '../models/team_model.dart';
+import '../models/team_status_model.dart';
 
 class TeamRemoteDataSource {
   Future<List<TeamModel>> getTeams() async {
@@ -51,7 +52,21 @@ class TeamRemoteDataSource {
     );
 
     return (response.data as List)
-        .map((member) => TeamMemberModel.fromJson(member))
+        .map(
+          (member) => TeamMemberModel.fromJson(member),
+        )
         .toList();
+  }
+
+  Future<TeamStatusModel> getTeamStatus(
+    int teamId,
+  ) async {
+    final response = await ApiClient.dio.get(
+      "/teams/$teamId/status",
+    );
+
+    return TeamStatusModel.fromJson(
+      response.data,
+    );
   }
 }

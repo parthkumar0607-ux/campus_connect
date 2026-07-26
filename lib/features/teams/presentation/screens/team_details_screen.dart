@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/models/team_member_model.dart';
 import '../../data/models/team_model.dart';
+import '../../data/models/team_status_model.dart';
 import '../../data/repositories/team_repository.dart';
 
 class TeamDetailsScreen extends StatefulWidget {
@@ -22,14 +23,20 @@ class _TeamDetailsScreenState
     extends State<TeamDetailsScreen> {
   final TeamRepository repository = TeamRepository();
 
-  bool isJoining = false;
+  bool isLoading = false;
 
   late Future<List<TeamMemberModel>> membersFuture;
+  late Future<TeamStatusModel> statusFuture;
 
   @override
   void initState() {
     super.initState();
+
     membersFuture = repository.getTeamMembers(
+      widget.team.id,
+    );
+
+    statusFuture = repository.getTeamStatus(
       widget.team.id,
     );
   }
@@ -37,7 +44,7 @@ class _TeamDetailsScreenState
   Future<void> joinTeam() async {
     try {
       setState(() {
-        isJoining = true;
+        isLoading = true;
       });
 
       await repository.joinTeam(widget.team.id);
@@ -52,28 +59,59 @@ class _TeamDetailsScreenState
 
       Navigator.pop(context, true);
     } on DioException catch (e) {
-      if (!mounted) return;
-
-      String message = "Something went wrong";
-
-      if (e.response != null &&
-          e.response!.data is Map &&
-          e.response!.data["detail"] != null) {
-        message = e.response!.data["detail"];
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-        ),
-      );
+      showError(e);
     } finally {
       if (mounted) {
         setState(() {
-          isJoining = false;
+          isLoading = false;
         });
       }
     }
+  }
+
+  Future<void> leaveTeam() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      await repository.leaveTeam(widget.team.id);
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Left team successfully 👋"),
+        ),
+      );
+
+      Navigator.pop(context, true);
+    } on DioException catch (e) {
+      showError(e);
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  void showError(DioException e) {
+    if (!mounted) return;
+
+    String message = "Something went wrong";
+
+    if (e.response?.data is Map &&
+        e.response!.data["detail"] != null) {
+      message = e.response!.data["detail"];
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
   }
 
   @override
@@ -166,11 +204,8 @@ class _TeamDetailsScreenState
                 if (snapshot.connectionState ==
                     ConnectionState.waiting) {
                   return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child:
-                          CircularProgressIndicator(),
-                    ),
+                    child:
+                        CircularProgressIndicator(),
                   );
                 }
 
@@ -183,19 +218,16 @@ class _TeamDetailsScreenState
                 final members =
                     snapshot.data ?? [];
 
-                if (members.isEmpty) {
-                  return const Text(
-                    "No members yet",
-                  );
-                }
-
                 return Column(
                   children: members.map((member) {
                     return ListTile(
-                      leading: const CircleAvatar(
-                        child: Icon(Icons.person),
+                      leading:
+                          const CircleAvatar(
+                        child:
+                            Icon(Icons.person),
                       ),
-                      title: Text(member.name),
+                      title:
+                          Text(member.name),
                     );
                   }).toList(),
                 );
@@ -204,29 +236,96 @@ class _TeamDetailsScreenState
 
             const SizedBox(height: 30),
 
-            SizedBox(
-              width: double.infinity,
-              height: 55,
-              child: ElevatedButton(
-                onPressed:
-                    isJoining ? null : joinTeam,
-                child: isJoining
-                    ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child:
-                            CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text(
-                        "Join Team",
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
+            FutureBuilder<TeamStatusModel>(
+              future: statusFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const Center(
+                    child:
+                        CircularProgressIndicator(),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return Text(
+                    snapshot.error.toString(),
+                  );
+                }
+
+                final status =
+                    snapshot.data!;
+
+                if (status.isCreator) {
+                  return SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Manage Team coming next 👑",
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        "Manage Team",
                       ),
-              ),
+                    ),
+                  );
+                }
+
+                if (status.joined) {
+                  return SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      style:
+                          ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Colors.red,
+                      ),
+                      onPressed:
+                          isLoading
+                              ? null
+                              : leaveTeam,
+                      child:
+                          isLoading
+                              ? const CircularProgressIndicator(
+                                  color:
+                                      Colors.white,
+                                )
+                              : const Text(
+                                  "Leave Team",
+                                ),
+                    ),
+                  );
+                }
+
+                return SizedBox(
+                  width: double.infinity,
+                  height: 55,
+                  child: ElevatedButton(
+                    onPressed:
+                        isLoading
+                            ? null
+                            : joinTeam,
+                    child:
+                        isLoading
+                            ? const CircularProgressIndicator(
+                                color:
+                                    Colors.white,
+                              )
+                            : const Text(
+                                "Join Team",
+                              ),
+                  ),
+                );
+              },
             ),
           ],
         ),
