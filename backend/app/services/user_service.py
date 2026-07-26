@@ -21,6 +21,8 @@ class UserService:
         current_user.college = user_data.college
         current_user.course = user_data.course
         current_user.year = user_data.year
+        current_user.bio = user_data.bio
+        current_user.skills = user_data.skills
 
         db.commit()
         db.refresh(current_user)

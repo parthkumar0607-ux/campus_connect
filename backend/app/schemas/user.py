@@ -11,11 +11,15 @@ class UserCreate(BaseModel):
     course: Optional[str] = None
     year: Optional[str] = None
 
+
 class UserUpdate(BaseModel):
     name: str
     college: str
     course: str
     year: str
+    bio: str
+    skills: str
+
 
 class UserResponse(BaseModel):
     id: int
@@ -24,6 +28,9 @@ class UserResponse(BaseModel):
     college: Optional[str] = None
     course: Optional[str] = None
     year: Optional[str] = None
+    bio: Optional[str] = None
+    skills: Optional[str] = None
+    profile_image: Optional[str] = None
 
     class Config:
         from_attributes = True
