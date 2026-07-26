@@ -6,6 +6,13 @@ from app.schemas.team import (
     TeamResponse,
     TeamStatusResponse,
 )
+from app.schemas.team import (
+    TeamCreate,
+    TeamMemberResponse,
+    TeamResponse,
+    TeamStatusResponse,
+    TeamUpdate,
+)
 from app.core.dependencies import get_current_user
 from app.database.database import get_db
 from app.models.user import User
@@ -98,5 +105,22 @@ def get_team_status(
     return TeamService.get_team_status(
         db,
         team_id,
+        current_user,
+    )
+
+@router.put(
+    "/{team_id}",
+    response_model=TeamResponse,
+)
+def edit_team(
+    team_id: int,
+    team: TeamUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return TeamService.edit_team(
+        db,
+        team_id,
+        team,
         current_user,
     )

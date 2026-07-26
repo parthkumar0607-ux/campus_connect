@@ -189,3 +189,43 @@ class TeamService:
             "joined": member is not None,
             "is_creator": team.created_by == current_user.id,
         }
+
+    @staticmethod
+    def edit_team(
+        db: Session,
+        team_id: int,
+        team_data,
+        current_user: User,
+    ):
+        team = TeamRepository.get_team_by_id(
+            db,
+            team_id,
+        )
+
+        if not team:
+            raise HTTPException(
+                status_code=404,
+                detail="Team not found",
+            )
+
+        if team.created_by != current_user.id:
+            raise HTTPException(
+                status_code=403,
+                detail="Only the creator can edit this team.",
+            )
+
+        if team.current_members > team_data.max_members:
+            raise HTTPException(
+                status_code=400,
+                detail="Max members cannot be less than current members.",
+            )
+
+        team.title = team_data.title
+        team.description = team_data.description
+        team.tech_stack = team_data.tech_stack
+        team.max_members = team_data.max_members
+
+        return TeamRepository.update_team(
+            db,
+            team,
+        )

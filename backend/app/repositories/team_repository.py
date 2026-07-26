@@ -63,6 +63,15 @@ class TeamRepository:
         db.delete(member)
 
     @staticmethod
+    def update_team(
+        db: Session,
+        team: Team,
+    ):
+        db.commit()
+        db.refresh(team)
+        return team
+
+    @staticmethod
     def get_team_members(
         db: Session,
         team_id: int,

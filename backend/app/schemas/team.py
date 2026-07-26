@@ -10,6 +10,13 @@ class TeamCreate(BaseModel):
     max_members: int
 
 
+class TeamUpdate(BaseModel):
+    title: str
+    description: str
+    tech_stack: str
+    max_members: int
+
+
 class TeamResponse(BaseModel):
     id: int
     title: str
@@ -31,6 +38,7 @@ class TeamMemberResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class TeamStatusResponse(BaseModel):
     joined: bool
-    is_creator: bool        
+    is_creator: bool
