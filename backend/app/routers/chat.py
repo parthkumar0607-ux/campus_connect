@@ -1,3 +1,7 @@
+from fastapi import WebSocket
+from fastapi import WebSocketDisconnect
+
+from app.websocket_manager import manager
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -48,3 +52,28 @@ def get_messages(
         team_id,
         current_user,
     )
+
+@router.websocket("/ws/{team_id}")
+async def websocket_endpoint(
+    websocket: WebSocket,
+    team_id: int,
+):
+    await manager.connect(
+        team_id,
+        websocket,
+    )
+
+    try:
+        while True:
+            data = await websocket.receive_json()
+
+            await manager.broadcast(
+                team_id,
+                data,
+            )
+
+    except WebSocketDisconnect:
+        manager.disconnect(
+            team_id,
+            websocket,
+        )
