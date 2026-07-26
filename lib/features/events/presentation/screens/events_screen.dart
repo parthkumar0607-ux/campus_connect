@@ -1,110 +1,164 @@
 import 'package:flutter/material.dart';
 
-class EventsScreen extends StatelessWidget {
+import '../../data/models/event_model.dart';
+import '../../data/repositories/event_repository.dart';
+import 'create_event_screen.dart';
+import 'event_details_screen.dart';
+
+class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
+
+  @override
+  State<EventsScreen> createState() =>
+      _EventsScreenState();
+}
+
+class _EventsScreenState
+    extends State<EventsScreen> {
+  final EventRepository repository =
+      EventRepository();
+
+  late Future<List<EventModel>> eventsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    loadEvents();
+  }
+
+  void loadEvents() {
+    eventsFuture = repository.getEvents();
+  }
+
+  Future<void> refreshEvents() async {
+    setState(() {
+      loadEvents();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            const Text(
-              "Events",
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            TextField(
-              decoration: InputDecoration(
-                hintText: "Search Events",
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 25),
-
-            _eventCard(
-              title: "Flutter Workshop",
-              location: "Computer Lab",
-              date: "25 July 2026",
-            ),
-
-            _eventCard(
-              title: "Hackathon 2026",
-              location: "Auditorium",
-              date: "30 July 2026",
-            ),
-
-            _eventCard(
-              title: "Coding Contest",
-              location: "Lab 4",
-              date: "5 August 2026",
-            ),
-          ],
-        ),
+      appBar: AppBar(
+        title: const Text("Events"),
       ),
-    );
-  }
-
-  Widget _eventCard({
-    required String title,
-    required String location,
-    required String date,
-  }) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 18),
-      child: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+      floatingActionButton:
+          FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () async {
+          final created =
+              await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+                  const CreateEventScreen(),
             ),
+          );
 
-            const SizedBox(height: 10),
+          if (created == true) {
+            refreshEvents();
+          }
+        },
+      ),
+      body: RefreshIndicator(
+        onRefresh: refreshEvents,
+        child: FutureBuilder<
+            List<EventModel>>(
+          future: eventsFuture,
+          builder: (
+            context,
+            snapshot,
+          ) {
+            if (snapshot.connectionState ==
+                ConnectionState.waiting) {
+              return const Center(
+                child:
+                    CircularProgressIndicator(),
+              );
+            }
 
-            Row(
-              children: [
-                const Icon(Icons.location_on, size: 18),
-                const SizedBox(width: 6),
-                Text(location),
-              ],
-            ),
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                  snapshot.error.toString(),
+                ),
+              );
+            }
 
-            const SizedBox(height: 8),
+            final events =
+                snapshot.data ?? [];
 
-            Row(
-              children: [
-                const Icon(Icons.calendar_month, size: 18),
-                const SizedBox(width: 6),
-                Text(date),
-              ],
-            ),
+            if (events.isEmpty) {
+              return const Center(
+                child: Text(
+                  "No Events Yet",
+                ),
+              );
+            }
 
-            const SizedBox(height: 18),
+            return ListView.builder(
+              padding:
+                  const EdgeInsets.all(16),
+              itemCount: events.length,
+              itemBuilder:
+                  (context, index) {
+                final event =
+                    events[index];
 
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () {},
-                child: const Text("Register"),
-              ),
-            ),
-          ],
+                return Card(
+                  margin:
+                      const EdgeInsets.only(
+                    bottom: 16,
+                  ),
+                  child: ListTile(
+                    title:
+                        Text(event.title),
+                    subtitle: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment
+                              .start,
+                      children: [
+                        Text(event.venue),
+                        const SizedBox(
+                            height: 4),
+                        Text(
+                          event.dateTime
+                              .toLocal()
+                              .toString(),
+                        ),
+                        const SizedBox(
+                            height: 4),
+                        Text(
+                          "${event.currentAttendees}/${event.maxAttendees} Attendees",
+                        ),
+                      ],
+                    ),
+                    trailing: const Icon(
+                      Icons
+                          .arrow_forward_ios,
+                    ),
+                    onTap: () async {
+                      final updated =
+                          await Navigator
+                              .push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              EventDetailsScreen(
+                            event: event,
+                          ),
+                        ),
+                      );
+
+                      if (updated == true) {
+                        refreshEvents();
+                      }
+                    },
+                  ),
+                );
+              },
+            );
+          },
         ),
       ),
     );
