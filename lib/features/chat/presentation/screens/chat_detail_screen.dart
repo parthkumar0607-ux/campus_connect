@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/models/message_model.dart';
@@ -27,9 +28,9 @@ class _ChatDetailScreenState
       messageController =
       TextEditingController();
 
-  late Future<List<MessageModel>>
-      messagesFuture;
+  List<MessageModel> messages = [];
 
+  bool loading = true;
   bool sending = false;
 
   @override
@@ -38,41 +39,71 @@ class _ChatDetailScreenState
     loadMessages();
   }
 
-  void loadMessages() {
-    messagesFuture =
-        repository.getMessages(
-      widget.teamId,
-    );
-  }
+  Future<void> loadMessages() async {
+    try {
+      final loaded =
+          await repository.getMessages(
+        widget.teamId,
+      );
 
-  Future<void> refreshMessages() async {
-    setState(() {
-      loadMessages();
-    });
+      if (!mounted) return;
+
+      setState(() {
+        messages = loaded;
+        loading = false;
+      });
+    } on DioException catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        loading = false;
+      });
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        SnackBar(
+          content: Text(
+            e.message ??
+                "Failed to load messages",
+          ),
+        ),
+      );
+    }
   }
 
   Future<void> sendMessage() async {
-    if (messageController.text
-        .trim()
-        .isEmpty) {
+    final text =
+        messageController.text.trim();
+
+    if (text.isEmpty) {
       return;
     }
 
-    setState(() {
-      sending = true;
-    });
-
     try {
+      setState(() {
+        sending = true;
+      });
+
       await repository.sendMessage(
         teamId: widget.teamId,
-        content:
-            messageController.text
-                .trim(),
+        content: text,
       );
 
       messageController.clear();
 
-      await refreshMessages();
+      await loadMessages();
+    } on DioException catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        SnackBar(
+          content: Text(
+            e.message ??
+                "Failed to send message",
+          ),
+        ),
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -126,7 +157,8 @@ class _ChatDetailScreenState
 
   @override
   Widget build(
-      BuildContext context) {
+    BuildContext context,
+  ) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -136,69 +168,32 @@ class _ChatDetailScreenState
       body: Column(
         children: [
           Expanded(
-            child: FutureBuilder<
-                List<MessageModel>>(
-              future: messagesFuture,
-              builder: (
-                context,
-                snapshot,
-              ) {
-                if (snapshot
-                        .connectionState ==
-                    ConnectionState
-                        .waiting) {
-                  return const Center(
+            child: loading
+                ? const Center(
                     child:
                         CircularProgressIndicator(),
-                  );
-                }
-
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                      snapshot.error
-                          .toString(),
+                  )
+                : RefreshIndicator(
+                    onRefresh:
+                        loadMessages,
+                    child:
+                        ListView.builder(
+                      padding:
+                          const EdgeInsets
+                              .all(16),
+                      itemCount:
+                          messages.length,
+                      itemBuilder:
+                          (
+                        context,
+                        index,
+                      ) {
+                        return messageBubble(
+                          messages[index],
+                        );
+                      },
                     ),
-                  );
-                }
-
-                final messages =
-                    snapshot.data ??
-                        [];
-
-                if (messages
-                    .isEmpty) {
-                  return const Center(
-                    child: Text(
-                      "No messages yet",
-                    ),
-                  );
-                }
-
-                return RefreshIndicator(
-                  onRefresh:
-                      refreshMessages,
-                  child:
-                      ListView.builder(
-                    padding:
-                        const EdgeInsets
-                            .all(16),
-                    itemCount:
-                        messages.length,
-                    itemBuilder:
-                        (
-                      context,
-                      index,
-                    ) {
-                      return messageBubble(
-                        messages[
-                            index],
-                      );
-                    },
                   ),
-                );
-              },
-            ),
           ),
                     Padding(
             padding: const EdgeInsets.all(12),
@@ -206,20 +201,21 @@ class _ChatDetailScreenState
               children: [
                 Expanded(
                   child: TextField(
-                    controller:
-                        messageController,
-                    decoration:
-                        InputDecoration(
-                      hintText:
-                          "Type a message...",
-                      border:
-                          OutlineInputBorder(
+                    controller: messageController,
+                    decoration: InputDecoration(
+                      hintText: "Type a message...",
+                      border: OutlineInputBorder(
                         borderRadius:
                             BorderRadius.circular(
                           30,
                         ),
                       ),
                     ),
+                    onSubmitted: (_) {
+                      if (!sending) {
+                        sendMessage();
+                      }
+                    },
                   ),
                 ),
 
