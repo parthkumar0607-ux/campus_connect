@@ -64,6 +64,12 @@ class TeamRemoteDataSource {
     );
   }
 
+  Future<void> deleteTeam(int teamId) async {
+    await ApiClient.dio.delete(
+      "/teams/$teamId",
+    );
+  }
+
   Future<List<TeamMemberModel>> getTeamMembers(
     int teamId,
   ) async {

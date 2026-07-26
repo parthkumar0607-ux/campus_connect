@@ -49,6 +49,10 @@ class TeamRepository {
     await remoteDataSource.leaveTeam(teamId);
   }
 
+  Future<void> deleteTeam(int teamId) async {
+    await remoteDataSource.deleteTeam(teamId);
+  }
+
   Future<List<TeamMemberModel>> getTeamMembers(
     int teamId,
   ) async {
