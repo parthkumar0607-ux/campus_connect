@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from app.models.user import User
 from app.models.team import Team
 from app.database.database import Base, engine
+from app.routers.chat import router as chat_router
 
 
 from app.routers.users import router as users_router
@@ -12,6 +13,7 @@ from app.models.team_member import TeamMember
 from app.models.event import Event
 from app.models.event_attendee import EventAttendee
 from fastapi.middleware.cors import CORSMiddleware
+from app.models.message import Message
 
 Base.metadata.create_all(bind=engine)
 
@@ -32,6 +34,7 @@ app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(teams_router)
 app.include_router(events_router)
+app.include_router(chat_router)
 
 
 @app.get("/")
