@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:campus_connect_v2/core/network/api_client.dart';
+import 'package:dio/dio.dart';
 
 import '../models/user_model.dart';
 
@@ -36,5 +39,23 @@ class ProfileRemoteDataSource {
     return UserModel.fromJson(
       response.data,
     );
+  }
+
+  Future<String> uploadProfileImage(
+    File image,
+  ) async {
+    final formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(
+        image.path,
+      ),
+    });
+
+    final response =
+        await ApiClient.dio.post(
+      "/users/me/profile-image",
+      data: formData,
+    );
+
+    return response.data["image_url"];
   }
 }

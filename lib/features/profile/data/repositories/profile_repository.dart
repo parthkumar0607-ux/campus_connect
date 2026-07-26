@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../datasource/profile_remote_datasource.dart';
 import '../models/user_model.dart';
 
@@ -24,6 +26,14 @@ class ProfileRepository {
       year: year,
       bio: bio,
       skills: skills,
+    );
+  }
+
+  Future<String> uploadProfileImage(
+    File image,
+  ) async {
+    return remoteDataSource.uploadProfileImage(
+      image,
     );
   }
 }

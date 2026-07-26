@@ -45,22 +45,25 @@ def update_my_profile(
         user_data,
     )
 
-@router.post(
-    "/me/profile-image",
-)
+@router.post("/me/profile-image")
 def upload_profile_image(
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    image_url = CloudinaryService.upload_profile_image(
-        file,
-    )
+    image_url = CloudinaryService.upload_profile_image(file)
+
+    print("Cloudinary URL:", image_url)
 
     current_user.profile_image = image_url
 
+    print("Before commit:", current_user.profile_image)
+
     db.commit()
+
     db.refresh(current_user)
+
+    print("After refresh:", current_user.profile_image)
 
     return {
         "image_url": image_url,
