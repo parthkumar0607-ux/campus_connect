@@ -37,12 +37,15 @@ class ConnectionManager:
         if team_id not in self.active_connections:
             return
 
-        for connection in self.active_connections[
-            team_id
-        ]:
-            await connection.send_json(
-                message,
-            )
+        disconnected = []
 
+        for connection in self.active_connections[team_id]:
+            try:
+                await connection.send_json(message)
+            except Exception:
+                 disconnected.append(connection)
+
+        for connection in disconnected:
+            self.active_connections[team_id].remove(connection)
 
 manager = ConnectionManager()
