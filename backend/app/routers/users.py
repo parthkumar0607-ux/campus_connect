@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, File, UploadFile
-from app.services.cloudinary_service import CloudinaryService
+from fastapi import APIRouter, Depends, File, UploadFile, Query
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_user
@@ -9,8 +9,8 @@ from app.schemas.user import (
     UserResponse,
     UserUpdate,
 )
+from app.services.cloudinary_service import CloudinaryService
 from app.services.user_service import UserService
-
 
 router = APIRouter(
     prefix="/users",
@@ -25,9 +25,7 @@ router = APIRouter(
 def get_my_profile(
     current_user: User = Depends(get_current_user),
 ):
-    return UserService.get_profile(
-        current_user,
-    )
+    return UserService.get_profile(current_user)
 
 
 @router.put(
@@ -45,6 +43,7 @@ def update_my_profile(
         user_data,
     )
 
+
 @router.post("/me/profile-image")
 def upload_profile_image(
     file: UploadFile = File(...),
@@ -53,18 +52,45 @@ def upload_profile_image(
 ):
     image_url = CloudinaryService.upload_profile_image(file)
 
-    print("Cloudinary URL:", image_url)
-
     current_user.profile_image = image_url
 
-    print("Before commit:", current_user.profile_image)
-
     db.commit()
-
     db.refresh(current_user)
-
-    print("After refresh:", current_user.profile_image)
 
     return {
         "image_url": image_url,
     }
+
+
+# ============================
+# Discover Students
+# ============================
+
+@router.get(
+    "",
+    response_model=list[UserResponse],
+)
+def get_all_users(
+    search: str | None = Query(
+        default=None,
+        description="Search by name, course or skills",
+    ),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    query = db.query(User).filter(
+        User.id != current_user.id
+    )
+
+    if search:
+        keyword = f"%{search}%"
+
+        query = query.filter(
+            or_(
+                User.name.ilike(keyword),
+                User.course.ilike(keyword),
+                User.skills.ilike(keyword),
+            )
+        )
+
+    return query.order_by(User.name.asc()).all()

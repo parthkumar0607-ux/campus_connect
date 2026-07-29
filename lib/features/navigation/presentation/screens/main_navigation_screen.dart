@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:campus_connect_v2/features/home/presentation/screens/home_screen.dart';
+import 'package:campus_connect_v2/features/discover/presentation/screens/discover_screen.dart';
 import 'package:campus_connect_v2/features/events/presentation/screens/events_screen.dart';
-import 'package:campus_connect_v2/features/chat/presentation/screens/chat_screen.dart';
 import 'package:campus_connect_v2/features/teams/presentation/screens/teams_screen.dart';
 import 'package:campus_connect_v2/features/profile/presentation/screens/profile_screen.dart';
 
@@ -17,11 +17,11 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
+  final List<Widget> _pages = const [
     HomeScreen(),
-    EventsScreen(),
-    ChatScreen(),
+    DiscoverScreen(),
     TeamsScreen(),
+    EventsScreen(),
     ProfileScreen(),
   ];
 
@@ -43,19 +43,19 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             label: "Home",
           ),
           NavigationDestination(
-            icon: Icon(Icons.event_outlined),
-            selectedIcon: Icon(Icons.event),
-            label: "Events",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.chat_outlined),
-            selectedIcon: Icon(Icons.chat),
-            label: "Chat",
+            icon: Icon(Icons.search),
+            selectedIcon: Icon(Icons.search),
+            label: "Discover",
           ),
           NavigationDestination(
             icon: Icon(Icons.groups_outlined),
             selectedIcon: Icon(Icons.groups),
             label: "Teams",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.event_outlined),
+            selectedIcon: Icon(Icons.event),
+            label: "Events",
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline),

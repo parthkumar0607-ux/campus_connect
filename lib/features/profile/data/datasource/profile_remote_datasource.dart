@@ -50,12 +50,14 @@ class ProfileRemoteDataSource {
       ),
     });
 
-    final response =
-        await ApiClient.dio.post(
-      "/users/me/profile-image",
-      data: formData,
-    );
+    final response = await ApiClient.dio.post(
+  "/users/me/profile-image",
+  data: formData,
+);
 
-    return response.data["image_url"];
+print("UPLOAD RESPONSE:");
+print(response.data);
+
+return response.data["image_url"];
   }
 }
