@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-
+import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
+import 'package:campus_connect_v2/shared/widgets/gradient_scaffold.dart';
 import 'package:campus_connect_v2/core/services/storage_service.dart';
 import 'package:campus_connect_v2/features/auth/data/repositories/auth_repository.dart';
 import 'package:campus_connect_v2/features/auth/presentation/screens/register_screen.dart';
@@ -90,144 +91,137 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xff4F46E5), Color(0xff6366F1)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(height: 40),
+    return GradientScaffold(
+      child: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const SizedBox(height: 35),
 
-                const CircleAvatar(
-                  radius: 45,
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.school_rounded,
-                    size: 50,
-                    color: Color(0xff4F46E5),
+              Container(
+                height: 110,
+                width: 110,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xff6366F1), Color(0xff8B5CF6)],
                   ),
+                  boxShadow: const [
+                    BoxShadow(color: Color(0x556366F1), blurRadius: 30),
+                  ],
                 ),
-
-                const SizedBox(height: 20),
-
-                const Text(
-                  "CampusConnect",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 34,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: const Icon(
+                  Icons.school_rounded,
+                  color: Colors.white,
+                  size: 55,
                 ),
+              ),
 
-                const SizedBox(height: 8),
+              const SizedBox(height: 25),
 
-                const Text(
-                  "Connect • Collaborate • Grow",
-                  style: TextStyle(color: Colors.white70, fontSize: 16),
+              const Text(
+                "CampusConnect",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 34,
+                  fontWeight: FontWeight.bold,
                 ),
+              ),
 
-                const SizedBox(height: 45),
+              const SizedBox(height: 8),
 
-                Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.symmetric(horizontal: 18),
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Text(
-                        "Welcome Back 👋",
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
+              const Text(
+                "Connect • Collaborate • Grow",
+                style: TextStyle(color: Colors.white70, fontSize: 16),
+              ),
+
+              const SizedBox(height: 40),
+
+              GlassCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      "Welcome Back 👋",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    const Text(
+                      "Login to continue",
+                      style: TextStyle(color: Colors.white70),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    PrimaryTextField(
+                      controller: emailController,
+                      hintText: "College Email",
+                      prefixIcon: Icons.email_outlined,
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    PrimaryTextField(
+                      controller: passwordController,
+                      hintText: "Password",
+                      prefixIcon: Icons.lock_outline,
+                      obscureText: obscurePassword,
+                      suffixIcon: IconButton(
+                        color: Colors.white70,
+                        icon: Icon(
+                          obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                         ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      const Text(
-                        "Sign in to continue",
-                        style: TextStyle(color: Colors.grey, fontSize: 16),
-                      ),
-
-                      const SizedBox(height: 30),
-
-                      PrimaryTextField(
-                        controller: emailController,
-                        hintText: "College Email",
-                        prefixIcon: Icons.email_outlined,
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      PrimaryTextField(
-                        controller: passwordController,
-                        hintText: "Password",
-                        prefixIcon: Icons.lock_outline,
-                        obscureText: obscurePassword,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            obscurePassword
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              obscurePassword = !obscurePassword;
-                            });
-                          },
-                        ),
-                      ),
-
-                      const SizedBox(height: 30),
-
-                      PrimaryButton(
-                        text: "Login",
-                        isLoading: isLoading,
-                        onPressed: login,
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      const DividerWithText(text: "OR"),
-
-                      const SizedBox(height: 16),
-
-                      TextButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const RegisterScreen(),
-                            ),
-                          );
+                          setState(() {
+                            obscurePassword = !obscurePassword;
+                          });
                         },
-                        child: const Text(
-                          "Create New Account",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                       ),
-                    ],
-                  ),
-                ),
+                    ),
 
-                const SizedBox(height: 30),
-              ],
-            ),
+                    const SizedBox(height: 28),
+
+                    PrimaryButton(
+                      text: "Login",
+                      isLoading: isLoading,
+                      onPressed: login,
+                    ),
+
+                    const SizedBox(height: 22),
+
+                    const DividerWithText(text: "OR"),
+
+                    const SizedBox(height: 18),
+
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const RegisterScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        "Create New Account",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 30),
+            ],
           ),
         ),
       ),
