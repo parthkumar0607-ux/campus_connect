@@ -36,9 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (emailController.text.trim().isEmpty ||
         passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter email and password"),
-        ),
+        const SnackBar(content: Text("Please enter email and password")),
       );
       return;
     }
@@ -53,17 +51,13 @@ class _LoginScreenState extends State<LoginScreen> {
         password: passwordController.text,
       );
 
-      await StorageService.saveToken(
-        response.accessToken,
-      );
+      await StorageService.saveToken(response.accessToken);
 
       if (!mounted) return;
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (_) => const MainNavigationScreen(),
-        ),
+        MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
       );
     } on DioException catch (e) {
       String message = "Login failed";
@@ -76,17 +70,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     } catch (_) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Something went wrong"),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Something went wrong")));
     }
 
     if (mounted) {
@@ -99,109 +91,143 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Login"),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 40),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xff4F46E5), Color(0xff6366F1)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 40),
 
-              const Icon(
-                Icons.school_rounded,
-                size: 90,
-              ),
-
-              const SizedBox(height: 20),
-
-              const Text(
-                "CampusConnect",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              const Text(
-                "Welcome Back!",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey,
-                ),
-              ),
-
-              const SizedBox(height: 40),
-
-              PrimaryTextField(
-                controller: emailController,
-                hintText: "College Email",
-                prefixIcon: Icons.email_outlined,
-              ),
-
-              const SizedBox(height: 20),
-
-              PrimaryTextField(
-                controller: passwordController,
-                hintText: "Password",
-                prefixIcon: Icons.lock_outline,
-                obscureText: obscurePassword,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    obscurePassword
-                        ? Icons.visibility_off
-                        : Icons.visibility,
+                const CircleAvatar(
+                  radius: 45,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.school_rounded,
+                    size: 50,
+                    color: Color(0xff4F46E5),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      obscurePassword = !obscurePassword;
-                    });
-                  },
                 ),
-              ),
 
-              const SizedBox(height: 30),
+                const SizedBox(height: 20),
 
-              PrimaryButton(
-                text: "Login",
-                isLoading: isLoading,
-                onPressed: login,
-              ),
-
-              const SizedBox(height: 25),
-
-              const DividerWithText(
-                text: "OR",
-              ),
-
-              const SizedBox(height: 20),
-
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          const RegisterScreen(),
-                    ),
-                  );
-                },
-                child: const Text(
-                  "Create Account",
+                const Text(
+                  "CampusConnect",
                   style: TextStyle(
-                    fontSize: 16,
+                    color: Colors.white,
+                    fontSize: 34,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 8),
+
+                const Text(
+                  "Connect • Collaborate • Grow",
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                ),
+
+                const SizedBox(height: 45),
+
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 18),
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text(
+                        "Welcome Back 👋",
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      const Text(
+                        "Sign in to continue",
+                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      PrimaryTextField(
+                        controller: emailController,
+                        hintText: "College Email",
+                        prefixIcon: Icons.email_outlined,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      PrimaryTextField(
+                        controller: passwordController,
+                        hintText: "Password",
+                        prefixIcon: Icons.lock_outline,
+                        obscureText: obscurePassword,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            obscurePassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              obscurePassword = !obscurePassword;
+                            });
+                          },
+                        ),
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      PrimaryButton(
+                        text: "Login",
+                        isLoading: isLoading,
+                        onPressed: login,
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      const DividerWithText(text: "OR"),
+
+                      const SizedBox(height: 16),
+
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const RegisterScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "Create New Account",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+              ],
+            ),
           ),
         ),
       ),

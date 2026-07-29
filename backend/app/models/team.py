@@ -56,11 +56,14 @@ class Team(Base):
         ForeignKey("users.id"),
     )
 
-    creator = relationship(
-        "User",
-    )
+    creator = relationship("User")
 
     members = relationship(
         "TeamMember",
+        cascade="all, delete-orphan",
+    )
+
+    invitations = relationship(
+        "TeamInvitation",
         cascade="all, delete-orphan",
     )

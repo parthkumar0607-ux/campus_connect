@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import 'package:campus_connect_v2/features/auth/data/repositories/auth_repository.dart';
+import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
+import 'package:campus_connect_v2/shared/widgets/gradient_scaffold.dart';
 import 'package:campus_connect_v2/shared/widgets/primary_button.dart';
 import 'package:campus_connect_v2/shared/widgets/primary_textfield.dart';
 
@@ -15,14 +17,11 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final AuthRepository repository = AuthRepository();
 
-  final TextEditingController fullNameController =
-      TextEditingController();
+  final TextEditingController fullNameController = TextEditingController();
 
-  final TextEditingController emailController =
-      TextEditingController();
+  final TextEditingController emailController = TextEditingController();
 
-  final TextEditingController passwordController =
-      TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   final TextEditingController confirmPasswordController =
       TextEditingController();
@@ -45,21 +44,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
         emailController.text.trim().isEmpty ||
         passwordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please fill all fields"),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Please fill all fields")));
       return;
     }
 
-    if (passwordController.text !=
-        confirmPasswordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Passwords do not match"),
-        ),
-      );
+    if (passwordController.text != confirmPasswordController.text) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Passwords do not match")));
       return;
     }
 
@@ -77,9 +71,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Account created successfully 🎉"),
-        ),
+        const SnackBar(content: Text("Account created successfully 🎉")),
       );
 
       Navigator.pop(context);
@@ -106,19 +98,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) {
         setState(() {
@@ -130,130 +118,136 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Create Account"),
-        centerTitle: true,
-      ),
-      body: SafeArea(
+    return GradientScaffold(
+      child: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(20),
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 30),
+              const SizedBox(height: 25),
 
-              const Icon(
-                Icons.school_rounded,
-                size: 90,
+              Container(
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(28),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xff6366F1), Color(0xff8B5CF6)],
+                  ),
+                  boxShadow: const [
+                    BoxShadow(color: Color(0x556366F1), blurRadius: 30),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.school_rounded,
+                  color: Colors.white,
+                  size: 52,
+                ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 25),
 
               const Text(
-                "Join CampusConnect",
-                textAlign: TextAlign.center,
+                "Create Account",
                 style: TextStyle(
-                  fontSize: 32,
+                  color: Colors.white,
+                  fontSize: 34,
                   fontWeight: FontWeight.bold,
                 ),
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
 
               const Text(
-                "Create your student account",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 17,
-                  color: Colors.grey,
-                ),
+                "Join your college community",
+                style: TextStyle(color: Colors.white70),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 35),
 
-              PrimaryTextField(
-                controller: fullNameController,
-                hintText: "Full Name",
-                prefixIcon: Icons.person_outline,
-              ),
+              GlassCard(
+                child: Column(
+                  children: [
+                    PrimaryTextField(
+                      controller: fullNameController,
+                      hintText: "Full Name",
+                      prefixIcon: Icons.person_outline,
+                    ),
 
-              const SizedBox(height: 20),
+                    const SizedBox(height: 18),
 
-              PrimaryTextField(
-                controller: emailController,
-                hintText: "College Email",
-                prefixIcon: Icons.email_outlined,
-              ),
+                    PrimaryTextField(
+                      controller: emailController,
+                      hintText: "College Email",
+                      prefixIcon: Icons.email_outlined,
+                    ),
 
-              const SizedBox(height: 20),
+                    const SizedBox(height: 18),
 
-              PrimaryTextField(
-                controller: passwordController,
-                hintText: "Password",
-                prefixIcon: Icons.lock_outline,
-                obscureText: obscurePassword,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    obscurePassword
-                        ? Icons.visibility_off
-                        : Icons.visibility,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      obscurePassword = !obscurePassword;
-                    });
-                  },
-                ),
-              ),
+                    PrimaryTextField(
+                      controller: passwordController,
+                      hintText: "Password",
+                      prefixIcon: Icons.lock_outline,
+                      obscureText: obscurePassword,
+                      suffixIcon: IconButton(
+                        color: Colors.white70,
+                        icon: Icon(
+                          obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            obscurePassword = !obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
 
-              const SizedBox(height: 20),
+                    const SizedBox(height: 18),
 
-              PrimaryTextField(
-                controller:
-                    confirmPasswordController,
-                hintText: "Confirm Password",
-                prefixIcon: Icons.lock_outline,
-                obscureText:
-                    obscureConfirmPassword,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    obscureConfirmPassword
-                        ? Icons.visibility_off
-                        : Icons.visibility,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      obscureConfirmPassword =
-                          !obscureConfirmPassword;
-                    });
-                  },
+                    PrimaryTextField(
+                      controller: confirmPasswordController,
+                      hintText: "Confirm Password",
+                      prefixIcon: Icons.lock_outline,
+                      obscureText: obscureConfirmPassword,
+                      suffixIcon: IconButton(
+                        color: Colors.white70,
+                        icon: Icon(
+                          obscureConfirmPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            obscureConfirmPassword = !obscureConfirmPassword;
+                          });
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    PrimaryButton(
+                      text: "Create Account",
+                      isLoading: isLoading,
+                      onPressed: register,
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text(
+                        "Already have an account? Login",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
               const SizedBox(height: 30),
-
-              PrimaryButton(
-                text: "Register",
-                isLoading: isLoading,
-                onPressed: register,
-              ),
-
-              const SizedBox(height: 20),
-
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  "Already have an account? Login",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
             ],
           ),
         ),

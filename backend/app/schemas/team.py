@@ -42,3 +42,28 @@ class TeamMemberResponse(BaseModel):
 class TeamStatusResponse(BaseModel):
     joined: bool
     is_creator: bool
+
+
+# ==========================
+# Team Invitations
+# ==========================
+
+class TeamInvitationCreate(BaseModel):
+    team_id: int
+    receiver_id: int
+
+
+class TeamInvitationResponse(BaseModel):
+    id: int
+    team_id: int
+    sender_id: int
+    receiver_id: int
+    status: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class TeamInvitationStatus(BaseModel):
+    message: str
