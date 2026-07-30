@@ -49,7 +49,7 @@ class CampusConnectApp extends StatelessWidget {
 
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: Colors.white.withOpacity(.05),
+          fillColor: Colors.white.withValues(alpha: .05),
 
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(18),

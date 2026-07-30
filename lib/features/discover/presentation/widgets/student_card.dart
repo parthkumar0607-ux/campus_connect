@@ -127,11 +127,11 @@ class StudentCard extends StatelessWidget {
                           vertical: 7,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(.08),
+                          color: Colors.white.withValues(alpha: .08),
                           borderRadius:
                               BorderRadius.circular(30),
                           border: Border.all(
-                            color: Colors.white.withOpacity(.12),
+                            color: Colors.white.withValues(alpha: .12),
                           ),
                         ),
                         child: Text(
@@ -152,7 +152,7 @@ class StudentCard extends StatelessWidget {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(.08),
+                  color: Colors.white.withValues(alpha: .08),
                   borderRadius:
                       BorderRadius.circular(30),
                 ),

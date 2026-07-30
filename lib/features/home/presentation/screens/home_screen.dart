@@ -407,10 +407,10 @@ class _StatCard extends StatelessWidget {
         horizontal: 10,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(.06),
+        color: Colors.white.withValues(alpha: .06),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: Colors.white.withOpacity(.12),
+          color: Colors.white.withValues(alpha: .12),
         ),
       ),
       child: Column(

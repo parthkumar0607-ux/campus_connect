@@ -46,7 +46,7 @@ class _MainNavigationScreenState
             child: NavigationBar(
               height: 72,
               backgroundColor:
-                  Colors.white.withOpacity(.08),
+                  Colors.white.withValues(alpha: .08),
 
               indicatorColor:
                   const Color(0xff6366F1),

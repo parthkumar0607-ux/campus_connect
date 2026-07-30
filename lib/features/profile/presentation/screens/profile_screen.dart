@@ -85,7 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               width: 54,
               height: 54,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(.08),
+                color: Colors.white.withValues(alpha: .08),
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Icon(
@@ -147,11 +147,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             vertical: 8,
           ),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(.08),
+            color: Colors.white.withValues(alpha: .08),
             borderRadius:
                 BorderRadius.circular(30),
             border: Border.all(
-              color: Colors.white.withOpacity(.12),
+              color: Colors.white.withValues(alpha: .12),
             ),
           ),
           child: Text(
@@ -358,7 +358,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(
                           color: Colors.white
-                              .withOpacity(.25),
+                              .withValues(alpha: .25),
                         ),
                         foregroundColor:
                             Colors.white,
