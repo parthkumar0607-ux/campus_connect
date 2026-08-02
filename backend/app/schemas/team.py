@@ -1,20 +1,17 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class TeamCreate(BaseModel):
-    title: str
-    description: str
-    tech_stack: str
-    max_members: int
+    title: str = Field(min_length=1, max_length=200)
+    description: str = Field(min_length=1, max_length=2000)
+    tech_stack: str = Field(min_length=1, max_length=500)
+    max_members: int = Field(ge=1, le=100)
 
 
-class TeamUpdate(BaseModel):
-    title: str
-    description: str
-    tech_stack: str
-    max_members: int
+class TeamUpdate(TeamCreate):
+    pass
 
 
 class TeamResponse(BaseModel):

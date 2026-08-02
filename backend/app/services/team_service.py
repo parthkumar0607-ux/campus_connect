@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.models.team import Team
@@ -24,15 +25,20 @@ class TeamService:
             created_by=current_user.id,
         )
 
-        TeamRepository.create_team(db, team)
-
         member = TeamMember(
             user_id=current_user.id,
-            team_id=team.id,
         )
 
-        TeamRepository.add_member(db, member)
-        TeamRepository.commit(db)
+        try:
+            db.add(team)
+            db.flush()
+            member.team_id = team.id
+            db.add(member)
+            db.commit()
+            db.refresh(team)
+        except SQLAlchemyError:
+            db.rollback()
+            raise
 
         return team
 
