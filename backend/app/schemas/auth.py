@@ -3,7 +3,9 @@ from pydantic import BaseModel, EmailStr, Field
 
 class LoginRequest(BaseModel):
     email: EmailStr
-    password: str = Field(min_length=8, max_length=128)
+    # Login must continue to accept credentials created before the stronger
+    # registration password policy was introduced.
+    password: str = Field(min_length=1, max_length=128)
 
 
 class Token(BaseModel):
