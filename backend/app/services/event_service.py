@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.models.event import Event
@@ -25,22 +26,20 @@ class EventService:
             created_by=current_user.id,
         )
 
-        EventRepository.create_event(
-            db,
-            event,
-        )
-
         attendee = EventAttendee(
             user_id=current_user.id,
-            event_id=event.id,
         )
 
-        EventRepository.add_attendee(
-            db,
-            attendee,
-        )
-
-        EventRepository.commit(db)
+        try:
+            db.add(event)
+            db.flush()
+            attendee.event_id = event.id
+            db.add(attendee)
+            db.commit()
+            db.refresh(event)
+        except SQLAlchemyError:
+            db.rollback()
+            raise
 
         return event
 

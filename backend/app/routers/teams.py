@@ -1,18 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.schemas.team import (
-    TeamCreate,
-    TeamMemberResponse,
-    TeamResponse,
-    TeamStatusResponse,
-)
-from app.schemas.team import (
-    TeamCreate,
-    TeamMemberResponse,
-    TeamResponse,
-    TeamStatusResponse,
-    TeamUpdate,
-)
+
 from app.core.dependencies import get_current_user
 from app.database.database import get_db
 from app.models.user import User
@@ -20,6 +8,8 @@ from app.schemas.team import (
     TeamCreate,
     TeamMemberResponse,
     TeamResponse,
+    TeamStatusResponse,
+    TeamUpdate,
 )
 from app.services.team_service import TeamService
 
