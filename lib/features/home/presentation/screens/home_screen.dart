@@ -22,21 +22,33 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const CircleAvatar(
-                      radius: 28,
-                      backgroundColor: Color(0xFF5865F2),
-                      child: Icon(Icons.person, color: Colors.white, size: 30),
+                    Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [Color(0xFFFF5C8A), Color(0xFF8B5CF6)],
+                        ),
+                      ),
+                      child: const CircleAvatar(
+                        radius: 26,
+                        backgroundColor: Color(0xFF17213A),
+                        child: Icon(Icons.person, color: Colors.white, size: 28),
+                      ),
                     ),
                     const SizedBox(width: 14),
                     const Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Good evening',
+                          Text('GOOD EVENING',
                               style: TextStyle(
-                                  color: Color(0xFF8E9BB5), fontSize: 14)),
+                                  color: Color(0xFF8E9BB5),
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1.1)),
                           SizedBox(height: 4),
-                          Text('Your campus is buzzing',
+                          Text('Your campus is buzzing ✦',
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 22,
@@ -77,6 +89,19 @@ class HomeScreen extends StatelessWidget {
               itemBuilder: (_, index) => _StoryAvatar(name: _storyNames[index]),
             ),
           ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 36,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: const [
+                _TopicChip(label: 'For you', selected: true),
+                _TopicChip(label: '#design'),
+                _TopicChip(label: '#hackathon'),
+                _TopicChip(label: '#placements'),
+              ],
+            ),
+          ),
           const SizedBox(height: 22),
           const _SectionTitle('Quick access'),
           const SizedBox(height: 12),
@@ -101,6 +126,27 @@ class HomeScreen extends StatelessWidget {
                   title: 'Discover',
                   onTap: () => onNavigate?.call(1)),
             ],
+          ),
+          const SizedBox(height: 24),
+          const _SectionTitle('Hot on campus'),
+          const SizedBox(height: 12),
+          const _CampusPost(
+            community: 'r/AI Builders',
+            time: '18 min ago',
+            title: 'Anyone joining the overnight hackathon team?',
+            body: 'Looking for one Flutter dev and a product brain. We already have the coffee covered.',
+            votes: '142',
+            comments: '26',
+          ),
+          const SizedBox(height: 12),
+          const _CampusPost(
+            community: 'r/Design Dojo',
+            time: '42 min ago',
+            title: 'Drop your portfolio for a friendly roast',
+            body: 'No gatekeeping — sharing feedback and wins before placement season.',
+            votes: '89',
+            comments: '18',
+            accent: Color(0xFFFF5C8A),
           ),
           const SizedBox(height: 24),
           const _SectionTitle('Trending communities'),
@@ -227,6 +273,141 @@ class _CommunityCard extends StatelessWidget {
             const SizedBox(width: 8),
             Text(members,
                 style: const TextStyle(color: Color(0xFF8E9BB5), fontSize: 12)),
+          ],
+        ),
+      );
+}
+
+class _TopicChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+
+  const _TopicChip({required this.label, this.selected = false});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        margin: const EdgeInsets.only(right: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+        decoration: BoxDecoration(
+          color: selected
+              ? const Color(0xFF5865F2)
+              : Colors.white.withValues(alpha: .07),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: selected ? .08 : .12),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 13,
+            fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+          ),
+        ),
+      );
+}
+
+class _CampusPost extends StatelessWidget {
+  final String community;
+  final String time;
+  final String title;
+  final String body;
+  final String votes;
+  final String comments;
+  final Color accent;
+
+  const _CampusPost({
+    required this.community,
+    required this.time,
+    required this.title,
+    required this.body,
+    required this.votes,
+    required this.comments,
+    this.accent = const Color(0xFF22D3EE),
+  });
+
+  @override
+  Widget build(BuildContext context) => GlassCard(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              children: [
+                Icon(Icons.keyboard_arrow_up_rounded, color: accent),
+                Text(
+                  votes,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Color(0xFF8E9BB5),
+                ),
+              ],
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$community  ·  $time',
+                    style: TextStyle(
+                      color: accent,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 7),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    body,
+                    style: const TextStyle(
+                      color: Color(0xFFB8C3D9),
+                      height: 1.35,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.mode_comment_outlined,
+                        color: Color(0xFF8E9BB5),
+                        size: 17,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        '$comments comments',
+                        style: const TextStyle(
+                          color: Color(0xFF8E9BB5),
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(width: 18),
+                      const Icon(
+                        Icons.ios_share_outlined,
+                        color: Color(0xFF8E9BB5),
+                        size: 17,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       );

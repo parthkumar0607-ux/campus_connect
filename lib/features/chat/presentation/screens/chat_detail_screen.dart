@@ -135,20 +135,19 @@ class _ChatDetailScreenState
           maxWidth: 280,
         ),
         decoration: BoxDecoration(
-          color: mine
-              ? Colors.blue
-              : Colors.grey.shade300,
+          color: mine ? const Color(0xFF5865F2) : const Color(0xFF17213A),
           borderRadius:
               BorderRadius.circular(
-            16,
+            18,
           ),
+          border: mine
+              ? null
+              : Border.all(color: Colors.white.withValues(alpha: .10)),
         ),
         child: Text(
           message.content,
           style: TextStyle(
-            color: mine
-                ? Colors.white
-                : Colors.black,
+            color: Colors.white,
           ),
         ),
       ),
@@ -160,10 +159,17 @@ class _ChatDetailScreenState
     BuildContext context,
   ) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(
-          widget.teamName,
+          '# ${widget.teamName}',
         ),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: Icon(Icons.people_alt_outlined),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -178,9 +184,7 @@ class _ChatDetailScreenState
                         loadMessages,
                     child:
                         ListView.builder(
-                      padding:
-                          const EdgeInsets
-                              .all(16),
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
                       itemCount:
                           messages.length,
                       itemBuilder:
@@ -202,14 +206,9 @@ class _ChatDetailScreenState
                 Expanded(
                   child: TextField(
                     controller: messageController,
-                    decoration: InputDecoration(
-                      hintText: "Type a message...",
-                      border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(
-                          30,
-                        ),
-                      ),
+                    decoration: const InputDecoration(
+                      hintText: 'Message #channel',
+                      prefixIcon: Icon(Icons.add_circle_outline),
                     ),
                     onSubmitted: (_) {
                       if (!sending) {
@@ -221,7 +220,13 @@ class _ChatDetailScreenState
 
                 const SizedBox(width: 10),
 
-                CircleAvatar(
+                Container(
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF5865F2), Color(0xFF8B5CF6)],
+                    ),
+                  ),
                   child: IconButton(
                     onPressed: sending
                         ? null
