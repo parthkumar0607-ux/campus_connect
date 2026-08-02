@@ -1,441 +1,258 @@
 import 'package:flutter/material.dart';
 
 import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
+
 import '../widgets/quick_action_card.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final ValueChanged<int>? onNavigate;
+  final VoidCallback? onOpenChats;
+
+  const HomeScreen({super.key, this.onNavigate, this.onOpenChats});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 112),
         children: [
           GlassCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Row(
+                Row(
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 28,
-                      backgroundColor: Color(0xff6366F1),
-                      child: Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: 30,
-                      ),
+                      backgroundColor: Color(0xFF5865F2),
+                      child: Icon(Icons.person, color: Colors.white, size: 30),
                     ),
-                    SizedBox(width: 16),
-                    Expanded(
+                    const SizedBox(width: 14),
+                    const Expanded(
                       child: Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Good Evening 👋",
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 15,
-                            ),
-                          ),
+                          Text('Good evening',
+                              style: TextStyle(
+                                  color: Color(0xFF8E9BB5), fontSize: 14)),
                           SizedBox(height: 4),
-                          Text(
-                            "Parth",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          Text('Your campus is buzzing',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800)),
                         ],
                       ),
                     ),
-                    Icon(
-                      Icons.notifications_none_rounded,
-                      color: Colors.white70,
+                    IconButton(
+                      onPressed: () {},
+                      tooltip: 'Notifications',
+                      icon: const Icon(Icons.notifications_none_rounded,
+                          color: Color(0xFF8E9BB5)),
                     ),
                   ],
                 ),
-
-                const SizedBox(height: 28),
-
+                const SizedBox(height: 20),
                 const Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
                   children: [
-                    _StatCard(
-                      value: "850+",
-                      label: "Students",
-                    ),
-                    _StatCard(
-                      value: "34",
-                      label: "Teams",
-                    ),
-                    _StatCard(
-                      value: "12",
-                      label: "Events",
-                    ),
+                    Expanded(child: _StatCard(value: '850+', label: 'Students')),
+                    SizedBox(width: 12),
+                    Expanded(child: _StatCard(value: '34', label: 'Teams')),
+                    SizedBox(width: 12),
+                    Expanded(child: _StatCard(value: '12', label: 'Events')),
                   ],
                 ),
               ],
             ),
           ),
-
-          const SizedBox(height: 24),
-
-          TextField(
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-            decoration: InputDecoration(
-              hintText: "Search students, teams, events...",
-              hintStyle: const TextStyle(
-                color: Colors.white54,
-              ),
-              prefixIcon: const Icon(
-                Icons.search,
-                color: Colors.white70,
-              ),
+          const SizedBox(height: 20),
+          const _SectionTitle('Stories'),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 92,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: _storyNames.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 12),
+              itemBuilder: (_, index) => _StoryAvatar(name: _storyNames[index]),
             ),
           ),
-
-          const SizedBox(height: 30),
-
-          const Text(
-            "Quick Actions",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
+          const SizedBox(height: 22),
+          const _SectionTitle('Quick access'),
+          const SizedBox(height: 12),
           GridView.count(
             shrinkWrap: true,
-            physics:
-                const NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 1.18,
+            crossAxisSpacing: 14,
+            mainAxisSpacing: 14,
+            childAspectRatio: 1.05,
             children: [
               QuickActionCard(
-                icon: Icons.groups,
-                title: "Teams",
-                onTap: () {},
-              ),
+                  icon: Icons.groups, title: 'Teams', onTap: () => onNavigate?.call(2)),
               QuickActionCard(
-                icon: Icons.event,
-                title: "Events",
-                onTap: () {},
-              ),
+                  icon: Icons.event, title: 'Events', onTap: () => onNavigate?.call(3)),
               QuickActionCard(
-                icon: Icons.chat,
-                title: "Chat",
-                onTap: () {},
-              ),
+                  icon: Icons.chat,
+                  title: 'Chat',
+                  onTap: () => onOpenChats?.call()),
               QuickActionCard(
-                icon: Icons.travel_explore,
-                title: "Discover",
-                onTap: () {},
-              ),
+                  icon: Icons.travel_explore,
+                  title: 'Discover',
+                  onTap: () => onNavigate?.call(1)),
             ],
           ),
-
-          const SizedBox(height: 30),
-
-          const Text(
-            "Trending Teams",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-            ),
+          const SizedBox(height: 24),
+          const _SectionTitle('Trending communities'),
+          const SizedBox(height: 12),
+          const _CommunityCard(
+            title: 'AI Builders',
+            subtitle: 'Build the future together',
+            members: '2.1k members',
           ),
-
-          const SizedBox(height: 15),
-
-          _buildTeamCard(
-            "AI Innovators",
-            "Looking for Flutter & ML developers",
-            Icons.smart_toy,
+          const SizedBox(height: 12),
+          const _CommunityCard(
+            title: 'Design Dojo',
+            subtitle: 'UI/UX critiques tonight',
+            members: '980 members',
           ),
-
-          const SizedBox(height: 14),
-
-          _buildTeamCard(
-            "Hackathon Squad",
-            "Registration closes tomorrow",
-            Icons.emoji_events,
-          ),
-
-          const SizedBox(height: 30),
-
-          const Text(
-            "Upcoming Events",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-            ),
-          ),
-
-          const SizedBox(height: 15),
-
-          _buildEventCard(
-            "Flutter Workshop",
-            "Tomorrow • Seminar Hall",
-            Icons.flutter_dash,
-          ),
-
-          const SizedBox(height: 14),
-
-          _buildEventCard(
-            "Hackathon 2026",
-            "Registration closes in 5 days",
-            Icons.code,
-          ),
-
-          const SizedBox(height: 30),
-
-          const Text(
-            "Announcements",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-            ),
-          ),
-
-          const SizedBox(height: 15),
-
-          _buildAnnouncementCard(),
-
-          const SizedBox(height: 40),
-        ],
-      ),
-    );
-  }
-    Widget _buildTeamCard(
-    String title,
-    String subtitle,
-    IconData icon,
-  ) {
-    return GlassCard(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: const Color(0xff6366F1),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(
-              icon,
-              color: Colors.white,
-            ),
-          ),
-
-          const SizedBox(width: 16),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+          const SizedBox(height: 24),
+          const _SectionTitle('Tonight’s highlight'),
+          const SizedBox(height: 12),
+          GlassCard(
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-
-                const SizedBox(height: 4),
-
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                  ),
+                Text('Campus mixer',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700)),
+                SizedBox(height: 8),
+                Text('Meet students from design, AI, and product in one place.',
+                    style: TextStyle(color: Color(0xFF8E9BB5), height: 1.5)),
+                SizedBox(height: 14),
+                Row(
+                  children: [
+                    Icon(Icons.schedule_rounded,
+                        color: Color(0xFF8E9BB5), size: 17),
+                    SizedBox(width: 6),
+                    Text('7:30 PM • Rooftop Lab',
+                        style: TextStyle(color: Color(0xFF8E9BB5))),
+                  ],
                 ),
               ],
             ),
           ),
-
-          const Icon(
-            Icons.arrow_forward_ios,
-            color: Colors.white54,
-            size: 18,
-          ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildEventCard(
-    String title,
-    String subtitle,
-    IconData icon,
-  ) {
-    return GlassCard(
-      padding: const EdgeInsets.all(16),
-      child: Row(
+const _storyNames = ['Mia', 'Ava', 'Jules', 'Noah', 'Riya'];
+
+class _SectionTitle extends StatelessWidget {
+  final String title;
+  const _SectionTitle(this.title);
+
+  @override
+  Widget build(BuildContext context) => Text(title,
+      style: const TextStyle(
+          color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700));
+}
+
+class _StoryAvatar extends StatelessWidget {
+  final String name;
+  const _StoryAvatar({required this.name});
+
+  @override
+  Widget build(BuildContext context) => Column(
         children: [
           Container(
-            width: 56,
-            height: 56,
+            width: 64,
+            height: 64,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
+              shape: BoxShape.circle,
               gradient: const LinearGradient(
-                colors: [
-                  Color(0xff6366F1),
-                  Color(0xff8B5CF6),
+                  colors: [Color(0xFF5865F2), Color(0xFF8B5CF6)]),
+              border: Border.all(color: Colors.white.withValues(alpha: .16), width: 1.5),
+            ),
+            child: Text(name.substring(0, 1),
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20)),
+          ),
+          const SizedBox(height: 8),
+          Text(name, style: const TextStyle(color: Color(0xFF8E9BB5), fontSize: 12)),
+        ],
+      );
+}
+
+class _CommunityCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String members;
+  const _CommunityCard(
+      {required this.title, required this.subtitle, required this.members});
+
+  @override
+  Widget build(BuildContext context) => GlassCard(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: const Color(0xFF5865F2).withValues(alpha: .18),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: const Icon(Icons.group, color: Color(0xFF8B95FF)),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 4),
+                  Text(subtitle,
+                      style: const TextStyle(color: Color(0xFF8E9BB5), fontSize: 13)),
                 ],
               ),
-              borderRadius:
-                  BorderRadius.circular(16),
             ),
-            child: Icon(
-              icon,
-              color: Colors.white,
-            ),
-          ),
-
-          const SizedBox(width: 16),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-
-                const SizedBox(height: 4),
-
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAnnouncementCard() {
-    return GlassCard(
-      padding: const EdgeInsets.all(18),
-      child: const Row(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            backgroundColor: Color(0xff6366F1),
-            child: Icon(
-              Icons.campaign,
-              color: Colors.white,
-            ),
-          ),
-
-          SizedBox(width: 16),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Welcome to CampusConnect 🎉",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17,
-                  ),
-                ),
-
-                SizedBox(height: 6),
-
-                Text(
-                  "Discover students, build amazing teams and never miss important campus events.",
-                  style: TextStyle(
-                    color: Colors.white70,
-                    height: 1.5,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-  }
+            const SizedBox(width: 8),
+            Text(members,
+                style: const TextStyle(color: Color(0xFF8E9BB5), fontSize: 12)),
+          ],
+        ),
+      );
+}
 
 class _StatCard extends StatelessWidget {
   final String value;
   final String label;
-
-  const _StatCard({
-    required this.value,
-    required this.label,
-  });
+  const _StatCard({required this.value, required this.label});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 90,
-      padding: const EdgeInsets.symmetric(
-        vertical: 14,
-        horizontal: 10,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: .06),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: .12),
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: .05),
+          borderRadius: BorderRadius.circular(16),
         ),
-      ),
-      child: Column(
-        children: [
-          Text(
-            value,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-          const SizedBox(height: 4),
-
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 13,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+        child: Column(
+          children: [
+            Text(value,
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16)),
+            const SizedBox(height: 4),
+            Text(label,
+                style: const TextStyle(color: Color(0xFF8E9BB5), fontSize: 12)),
+          ],
+        ),
+      );
 }

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import 'package:campus_connect_v2/features/chat/presentation/screens/chat_screen.dart';
 import 'package:campus_connect_v2/features/discover/presentation/screens/discover_screen.dart';
 import 'package:campus_connect_v2/features/events/presentation/screens/events_screen.dart';
 import 'package:campus_connect_v2/features/home/presentation/screens/home_screen.dart';
@@ -20,19 +21,50 @@ class _MainNavigationScreenState
     extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = const [
-    HomeScreen(),
-    DiscoverScreen(),
-    TeamsScreen(),
-    EventsScreen(),
-    ProfileScreen(),
-  ];
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      HomeScreen(
+        onNavigate: _selectTab,
+        onOpenChats: _openChats,
+      ),
+      const DiscoverScreen(),
+      const TeamsScreen(),
+      const EventsScreen(),
+      const ProfileScreen(),
+    ];
+  }
+
+  void _selectTab(int index) => setState(() => _selectedIndex = index);
+
+  void _openChats() {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const ChatScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      body: _pages[_selectedIndex],
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF0B1020),
+            Color(0xFF121A2F),
+            Color(0xFF1A2542),
+            Color(0xFF2A1F5B),
+          ],
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBody: true,
+        body: _pages[_selectedIndex],
 
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
@@ -59,11 +91,7 @@ class _MainNavigationScreenState
                   NavigationDestinationLabelBehavior
                       .alwaysHide,
 
-              onDestinationSelected: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
+              onDestinationSelected: _selectTab,
 
               destinations: const [
                 NavigationDestination(
@@ -94,6 +122,7 @@ class _MainNavigationScreenState
               ],
             ),
           ),
+        ),
         ),
       ),
     );
