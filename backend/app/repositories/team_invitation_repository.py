@@ -50,7 +50,6 @@ class TeamInvitationRepository:
             )
             .first()
         )
-
     @staticmethod
     def save(db: Session):
         db.commit()
