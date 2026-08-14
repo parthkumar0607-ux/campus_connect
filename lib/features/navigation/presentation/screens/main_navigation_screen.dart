@@ -54,10 +54,10 @@ class _MainNavigationScreenState
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF0B1020),
-            Color(0xFF121A2F),
-            Color(0xFF1A2542),
-            Color(0xFF2A1F5B),
+            Color(0xFF09090D),
+            Color(0xFF101019),
+            Color(0xFF171126),
+            Color(0xFF0D0D12),
           ],
         ),
       ),
@@ -76,12 +76,12 @@ class _MainNavigationScreenState
               sigmaY: 20,
             ),
             child: NavigationBar(
-              height: 72,
+              height: 68,
               backgroundColor:
-                  Colors.white.withValues(alpha: .08),
+                  const Color(0xFF17171F).withValues(alpha: .92),
 
               indicatorColor:
-                  const Color(0xff6366F1),
+                  const Color(0xFFA855F7),
 
               elevation: 0,
 
@@ -100,8 +100,8 @@ class _MainNavigationScreenState
                   label: "Home",
                 ),
                 NavigationDestination(
-                  icon: Icon(Icons.search),
-                  selectedIcon: Icon(Icons.search),
+                  icon: Icon(Icons.explore_outlined),
+                  selectedIcon: Icon(Icons.explore),
                   label: "Discover",
                 ),
                 NavigationDestination(

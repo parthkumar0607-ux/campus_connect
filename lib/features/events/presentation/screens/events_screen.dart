@@ -121,7 +121,7 @@ class _EventsScreenState extends State<EventsScreen> {
                           CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Campus Events",
+                          "Events",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 30,
@@ -130,11 +130,23 @@ class _EventsScreenState extends State<EventsScreen> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          "Discover workshops, hackathons and campus activities.",
+                          "Find your next campus memory.",
                           style: TextStyle(
                             color: Colors.white70,
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 14),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: const [
+                        _EventFilter(label: 'Upcoming', active: true),
+                        _EventFilter(label: 'My events'),
+                        _EventFilter(label: 'Popular'),
                       ],
                     ),
                   ),
@@ -311,4 +323,25 @@ class _EventCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _EventFilter extends StatelessWidget {
+  final String label;
+  final bool active;
+  const _EventFilter({required this.label, this.active = false});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        margin: const EdgeInsets.only(right: 9),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: active
+              ? const LinearGradient(colors: [Color(0xFF8B5CF6), Color(0xFFEC5DC8)])
+              : null,
+          color: active ? null : Colors.white.withValues(alpha: .07),
+        ),
+        child: Text(label,
+            style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700)),
+      );
 }

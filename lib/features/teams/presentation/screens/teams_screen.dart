@@ -121,7 +121,7 @@ class _TeamsScreenState extends State<TeamsScreen> {
                           CrossAxisAlignment.start,
                       children: const [
                         Text(
-                          "Project Teams",
+                          "Teams",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 30,
@@ -130,13 +130,25 @@ class _TeamsScreenState extends State<TeamsScreen> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          "Collaborate with students on amazing projects.",
+                          "Find your squad and build something real.",
                           style: TextStyle(
                             color: Colors.white70,
                           ),
                         ),
                       ],
                     ),
+                  ),
+
+                  const SizedBox(height: 14),
+                  const Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _TeamFilter(label: 'All', active: true),
+                      _TeamFilter(label: 'Tech'),
+                      _TeamFilter(label: 'Design'),
+                      _TeamFilter(label: 'Sports'),
+                    ],
                   ),
 
                   const SizedBox(height: 24),
@@ -302,4 +314,24 @@ class _TeamCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _TeamFilter extends StatelessWidget {
+  final String label;
+  final bool active;
+  const _TeamFilter({required this.label, this.active = false});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+        decoration: BoxDecoration(
+          color: active ? const Color(0xFFEEE6FF) : Colors.white.withValues(alpha: .08),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Text(label,
+            style: TextStyle(
+                color: active ? const Color(0xFF5B21B6) : Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.w700)),
+      );
 }
