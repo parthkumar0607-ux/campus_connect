@@ -19,12 +19,12 @@ class PrimaryButton extends StatelessWidget {
       width: double.infinity,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(14),
           gradient: const LinearGradient(
-            colors: [Color(0xFF5865F2), Color(0xFF8B5CF6)],
+            colors: [Color(0xFF7C3AED), Color(0xFFE85AD7)],
           ),
           boxShadow: const [
-            BoxShadow(color: Color(0x665865F2), blurRadius: 20, offset: Offset(0, 10)),
+            BoxShadow(color: Color(0x667C3AED), blurRadius: 18, offset: Offset(0, 8)),
           ],
         ),
         child: FilledButton(
@@ -32,7 +32,7 @@ class PrimaryButton extends StatelessWidget {
           style: FilledButton.styleFrom(
             backgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           ),
           child: isLoading
               ? const SizedBox(

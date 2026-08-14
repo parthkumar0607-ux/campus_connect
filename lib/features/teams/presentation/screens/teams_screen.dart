@@ -65,14 +65,6 @@ class _TeamsScreenState extends State<TeamsScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
 
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: const Color(0xff6366F1),
-        foregroundColor: Colors.white,
-        onPressed: openCreateTeam,
-        icon: const Icon(Icons.add),
-        label: const Text("Create Team"),
-      ),
-
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: refreshTeams,
@@ -100,14 +92,11 @@ class _TeamsScreenState extends State<TeamsScreen> {
               final teams = snapshot.data ?? [];
 
               if (teams.isEmpty) {
-                return const Center(
-                  child: Text(
-                    "No Teams Yet",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                return Center(
+                  child: FilledButton.icon(
+                    onPressed: openCreateTeam,
+                    icon: const Icon(Icons.add),
+                    label: const Text('Create the first team'),
                   ),
                 );
               }
@@ -149,6 +138,16 @@ class _TeamsScreenState extends State<TeamsScreen> {
                       _TeamFilter(label: 'Design'),
                       _TeamFilter(label: 'Sports'),
                     ],
+                  ),
+
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: openCreateTeam,
+                      icon: const Icon(Icons.add_circle_outline),
+                      label: const Text('Create a team'),
+                    ),
                   ),
 
                   const SizedBox(height: 24),

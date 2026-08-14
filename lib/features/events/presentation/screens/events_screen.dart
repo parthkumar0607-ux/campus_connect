@@ -65,14 +65,6 @@ class _EventsScreenState extends State<EventsScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
 
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: const Color(0xff6366F1),
-        foregroundColor: Colors.white,
-        onPressed: createEvent,
-        icon: const Icon(Icons.add),
-        label: const Text("Create Event"),
-      ),
-
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: refreshEvents,
@@ -100,14 +92,11 @@ class _EventsScreenState extends State<EventsScreen> {
               final events = snapshot.data ?? [];
 
               if (events.isEmpty) {
-                return const Center(
-                  child: Text(
-                    "No Events Yet",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                return Center(
+                  child: FilledButton.icon(
+                    onPressed: createEvent,
+                    icon: const Icon(Icons.add),
+                    label: const Text('Create the first event'),
                   ),
                 );
               }
@@ -148,6 +137,16 @@ class _EventsScreenState extends State<EventsScreen> {
                         _EventFilter(label: 'My events'),
                         _EventFilter(label: 'Popular'),
                       ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: createEvent,
+                      icon: const Icon(Icons.add_circle_outline),
+                      label: const Text('Create an event'),
                     ),
                   ),
 

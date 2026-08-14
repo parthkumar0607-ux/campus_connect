@@ -14,13 +14,13 @@ class GradientScaffold extends StatelessWidget {
         height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF0B1020),
-              Color(0xFF121A2F),
-              Color(0xFF1A2542),
-              Color(0xFF2A1F5B),
+              Color(0xFF09090D),
+              Color(0xFF101019),
+              Color(0xFF180E24),
+              Color(0xFF0B0B10),
             ],
           ),
         ),
