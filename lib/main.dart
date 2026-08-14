@@ -16,8 +16,16 @@ class CampusConnectApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'CampusConnect',
       themeMode: ThemeMode.dark,
-      theme: AppTheme.darkTheme,
-      darkTheme: AppTheme.darkTheme,
+      theme: AppTheme.darkTheme.copyWith(
+        scaffoldBackgroundColor: const Color(0xFF090B10),
+        canvasColor: const Color(0xFF090B10),
+        cardColor: const Color(0xFF11151D),
+      ),
+      darkTheme: AppTheme.darkTheme.copyWith(
+        scaffoldBackgroundColor: const Color(0xFF090B10),
+        canvasColor: const Color(0xFF090B10),
+        cardColor: const Color(0xFF11151D),
+      ),
       home: const SplashScreen(),
     );
   }

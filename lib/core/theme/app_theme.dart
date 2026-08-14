@@ -9,11 +9,12 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      fontFamily: 'Segoe UI',
+      fontFamilyFallback: const ['SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Arial', 'sans-serif'],
       scaffoldBackgroundColor: AppColors.background,
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.primary,
         brightness: Brightness.dark,
-        background: AppColors.background,
         surface: AppColors.surface,
         primary: AppColors.primary,
         secondary: AppColors.secondary,
@@ -30,7 +31,7 @@ class AppTheme {
         titleLarge: AppTextStyles.title,
         bodyLarge: AppTextStyles.body,
         bodyMedium: AppTextStyles.caption,
-      ),
+      ).apply(fontFamily: '.SF Pro Display'),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,

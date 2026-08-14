@@ -5,6 +5,7 @@ import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
 import '../../data/models/chat_room_model.dart';
 import '../../data/repositories/chat_repository.dart';
 import 'chat_detail_screen.dart';
+import 'personal_chat_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -35,11 +36,19 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SafeArea(
-          child: loading
-              ? const Center(child: CircularProgressIndicator())
-              : RefreshIndicator(
+        backgroundColor: const Color(0xFF090B10),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF101319), Color(0xFF0B0D12), Color(0xFF090B10)],
+            ),
+          ),
+          child: SafeArea(
+            child: loading
+                ? const Center(child: CircularProgressIndicator())
+                : RefreshIndicator(
                   onRefresh: loadChats,
                   child: ListView(
                     padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
@@ -87,7 +96,17 @@ class _ChatScreenState extends State<ChatScreen> {
                             scrollDirection: Axis.horizontal,
                             itemCount: chatRooms.length,
                             separatorBuilder: (_, _) => const SizedBox(width: 12),
-                            itemBuilder: (_, index) => _ActiveChannel(room: chatRooms[index]),
+                            itemBuilder: (_, index) => GestureDetector(
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const PersonalChatScreen(
+                                    otherUserName: 'Aarav',
+                                  ),
+                                ),
+                              ),
+                              child: _ActiveChannel(room: chatRooms[index]),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -139,6 +158,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ],
                   ),
                 ),
+          ),
         ),
       );
 }

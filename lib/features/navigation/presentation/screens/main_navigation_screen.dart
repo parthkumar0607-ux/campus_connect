@@ -62,7 +62,7 @@ class _MainNavigationScreenState
         ),
       ),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color(0xFF090B10),
         extendBody: true,
         body: _pages[_selectedIndex],
 
