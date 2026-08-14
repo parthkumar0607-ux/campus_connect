@@ -6,8 +6,10 @@ class ApiClient {
   static final Dio dio = Dio(
     BaseOptions(
       baseUrl: "https://campus-connect-k76s.onrender.com",
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
+      // Render free instances can take more than ten seconds to wake up.
+      connectTimeout: const Duration(seconds: 45),
+      receiveTimeout: const Duration(seconds: 45),
+      sendTimeout: const Duration(seconds: 45),
       headers: {
         "Content-Type": "application/json",
       },
@@ -18,10 +20,6 @@ class ApiClient {
         onRequest: (options, handler) async {
           final token = await StorageService.getToken();
 
-          print("================================");
-          print("REQUEST URL: ${options.baseUrl}${options.path}");
-          print("REQUEST DATA: ${options.data}");
-
           if (token != null && token.isNotEmpty) {
             options.headers["Authorization"] = "Bearer $token";
           }
@@ -29,14 +27,9 @@ class ApiClient {
           handler.next(options);
         },
         onResponse: (response, handler) {
-          print("STATUS: ${response.statusCode}");
-          print("BODY: ${response.data}");
           handler.next(response);
         },
         onError: (e, handler) {
-          print("ERROR STATUS: ${e.response?.statusCode}");
-          print("ERROR BODY: ${e.response?.data}");
-          print("ERROR: ${e.message}");
           handler.next(e);
         },
       ),
