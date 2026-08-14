@@ -11,6 +11,7 @@ class MessageResponse(BaseModel):
     id: int
     team_id: int
     sender_id: int
+    sender_name: str
     content: str
     created_at: datetime
 

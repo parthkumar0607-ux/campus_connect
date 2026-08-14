@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.models.message import Message
 from app.models.team import Team
 from app.models.team_member import TeamMember
+from app.models.user import User
 
 
 class MessageRepository:
@@ -22,8 +23,9 @@ class MessageRepository:
         db: Session,
         team_id: int,
     ):
-        return (
-            db.query(Message)
+        rows = (
+            db.query(Message, User.name.label("sender_name"))
+            .join(User, User.id == Message.sender_id)
             .filter(
                 Message.team_id == team_id,
             )
@@ -32,6 +34,18 @@ class MessageRepository:
             )
             .all()
         )
+
+        return [
+            {
+                "id": message.id,
+                "team_id": message.team_id,
+                "sender_id": message.sender_id,
+                "sender_name": sender_name,
+                "content": message.content,
+                "created_at": message.created_at,
+            }
+            for message, sender_name in rows
+        ]
 
     @staticmethod
     def get_user_chat_rooms(
