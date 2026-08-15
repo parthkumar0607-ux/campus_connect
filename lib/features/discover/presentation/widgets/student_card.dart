@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:campus_connect_v2/features/chat/presentation/screens/personal_chat_screen.dart';
 import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
 
 import '../../models/discover_user_model.dart';
@@ -166,21 +167,42 @@ class StudentCard extends StatelessWidget {
 
             const SizedBox(height: 22),
 
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          UserProfileScreen(user: user),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.person),
-                label: const Text("View Profile"),
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              UserProfileScreen(user: user),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.person),
+                    label: const Text("View Profile"),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PersonalChatScreen(
+                            otherUserName: user.name,
+                            otherUserId: user.id,
+                          ),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.message_outlined),
+                    label: const Text("Message"),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

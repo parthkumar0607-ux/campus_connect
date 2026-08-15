@@ -3,10 +3,15 @@ import 'package:dio/dio.dart';
 import '../services/storage_service.dart';
 
 class ApiClient {
+  static const String _defaultBaseUrl = "https://campus-connect-k76s.onrender.com";
+  static final String _configuredBaseUrl = const String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: _defaultBaseUrl,
+  );
+
   static final Dio dio = Dio(
     BaseOptions(
-      baseUrl: "https://campus-connect-k76s.onrender.com",
-      // Render free instances can take more than ten seconds to wake up.
+      baseUrl: _configuredBaseUrl,
       connectTimeout: const Duration(seconds: 45),
       receiveTimeout: const Duration(seconds: 45),
       sendTimeout: const Duration(seconds: 45),

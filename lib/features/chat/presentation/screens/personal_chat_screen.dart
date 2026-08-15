@@ -1,9 +1,10 @@
+import 'package:campus_connect_v2/core/network/api_client.dart';
 import 'package:campus_connect_v2/features/profile/data/models/user_model.dart';
 import 'package:campus_connect_v2/features/profile/data/repositories/profile_repository.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/models/message_model.dart';
-import '../../data/repositories/personal_chat_repository.dart';
 
 class PersonalChatScreen extends StatefulWidget {
   final String otherUserName;
@@ -22,10 +23,10 @@ class PersonalChatScreen extends StatefulWidget {
 class _PersonalChatScreenState extends State<PersonalChatScreen> {
   final TextEditingController messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  final PersonalChatRepository _repository = PersonalChatRepository();
   final ProfileRepository _profileRepository = ProfileRepository();
   UserModel? _currentUser;
   bool _loadingProfile = true;
+  bool _sending = false;
   List<MessageModel> _messages = [];
 
   @override
@@ -37,41 +38,22 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
   Future<void> _loadProfileAndMessages() async {
     try {
       final user = await _profileRepository.getProfile();
-      final savedMessages = await _repository.loadMessages(widget.otherUserId);
+      final response = await ApiClient.dio.get('/direct-messages/${widget.otherUserId}');
+      final loadedMessages = (response.data as List)
+          .map((e) => MessageModel.fromJson(Map<String, dynamic>.from(e)))
+          .toList();
 
       if (!mounted) return;
 
       setState(() {
         _currentUser = user;
-        _messages = savedMessages.isNotEmpty
-            ? savedMessages
-            : [
-                MessageModel(
-                  id: DateTime.now().millisecondsSinceEpoch,
-                  teamId: 0,
-                  senderId: widget.otherUserId,
-                  senderName: widget.otherUserName,
-                  content: 'Hey! Let’s connect on this project.',
-                  createdAt: DateTime.now().subtract(const Duration(minutes: 3)),
-                ),
-              ];
+        _messages = loadedMessages;
       });
-
-      await _repository.saveMessages(widget.otherUserId, _messages);
     } catch (_) {
       if (!mounted) return;
       setState(() {
         _currentUser = null;
-        _messages = [
-          MessageModel(
-            id: DateTime.now().millisecondsSinceEpoch,
-            teamId: 0,
-            senderId: widget.otherUserId,
-            senderName: widget.otherUserName,
-            content: 'Hey! Let’s connect on this project.',
-            createdAt: DateTime.now().subtract(const Duration(minutes: 3)),
-          ),
-        ];
+        _messages = [];
       });
     } finally {
       if (mounted) {
@@ -100,28 +82,37 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
 
   Future<void> _sendMessage() async {
     final text = messageController.text.trim();
-    if (text.isEmpty) return;
+    if (text.isEmpty || _sending) return;
 
-    final currentUserId = _currentUser?.id ?? 1;
-    final currentUserName = _currentUser?.name ?? 'You';
+    setState(() => _sending = true);
 
-    final newMessage = MessageModel(
-      id: DateTime.now().millisecondsSinceEpoch,
-      teamId: 0,
-      senderId: currentUserId,
-      senderName: currentUserName,
-      content: text,
-      createdAt: DateTime.now(),
-    );
+    try {
+      final response = await ApiClient.dio.post(
+        '/direct-messages/${widget.otherUserId}',
+        data: {'content': text},
+      );
 
-    final updatedMessages = [..._messages, newMessage];
-    setState(() {
-      _messages = updatedMessages;
-    });
+      final created = MessageModel.fromJson(Map<String, dynamic>.from(response.data));
 
-    messageController.clear();
-    await _repository.saveMessages(widget.otherUserId, updatedMessages);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+      if (!mounted) return;
+
+      setState(() {
+        _messages = [..._messages, created];
+      });
+      messageController.clear();
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+    } on DioException catch (error) {
+      if (mounted) {
+        final message = error.response?.data is Map && error.response!.data['detail'] != null
+            ? error.response!.data['detail'].toString()
+            : 'Message failed to send';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _sending = false);
+    }
   }
 
   Widget _messageBubble(MessageModel message) {
@@ -351,8 +342,17 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
                           padding: EdgeInsets.zero,
                           iconSize: 20,
                           color: Colors.white,
-                          onPressed: _sendMessage,
-                          icon: const Icon(Icons.arrow_upward_rounded),
+                          onPressed: _sending ? null : _sendMessage,
+                          icon: _sending
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Icon(Icons.arrow_upward_rounded),
                         ),
                       ),
                     ],

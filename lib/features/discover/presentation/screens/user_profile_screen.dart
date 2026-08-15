@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:campus_connect_v2/features/chat/presentation/screens/personal_chat_screen.dart';
 import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
 
 import '../../models/discover_user_model.dart';
@@ -50,9 +51,19 @@ class UserProfileScreen extends StatelessWidget {
                         style: const TextStyle(color: Color(0xFF8E9BB5))),
                     const SizedBox(height: 16),
                     FilledButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.person_add_alt_1_outlined),
-                      label: const Text('Connect'),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => PersonalChatScreen(
+                              otherUserName: user.name,
+                              otherUserId: user.id,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.message_outlined),
+                      label: const Text('Message'),
                     ),
                   ],
                 ),

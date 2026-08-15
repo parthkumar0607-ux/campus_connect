@@ -27,6 +27,18 @@ class CampusConnectApp extends StatelessWidget {
         cardColor: const Color(0xFF11151D),
       ),
       home: const SplashScreen(),
+      onGenerateRoute: (settings) {
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const SplashScreen(),
+        );
+      },
+      onUnknownRoute: (settings) {
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const SplashScreen(),
+        );
+      },
     );
   }
 }
