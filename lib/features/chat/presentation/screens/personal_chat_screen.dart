@@ -1,6 +1,9 @@
+import 'package:campus_connect_v2/features/profile/data/models/user_model.dart';
+import 'package:campus_connect_v2/features/profile/data/repositories/profile_repository.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/models/message_model.dart';
+import '../../data/repositories/personal_chat_repository.dart';
 
 class PersonalChatScreen extends StatefulWidget {
   final String otherUserName;
@@ -19,37 +22,63 @@ class PersonalChatScreen extends StatefulWidget {
 class _PersonalChatScreenState extends State<PersonalChatScreen> {
   final TextEditingController messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  final List<MessageModel> _messages = [
-    MessageModel(
-      id: 1,
-      teamId: 0,
-      senderId: 2,
-      senderName: 'Aarav',
-      content: 'Hey, are you free for the design review later?',
-      createdAt: DateTime.now().subtract(const Duration(minutes: 40)),
-    ),
-    MessageModel(
-      id: 2,
-      teamId: 0,
-      senderId: 1,
-      senderName: 'You',
-      content: 'Yep! I can join after 6.',
-      createdAt: DateTime.now().subtract(const Duration(minutes: 36)),
-    ),
-    MessageModel(
-      id: 3,
-      teamId: 0,
-      senderId: 2,
-      senderName: 'Aarav',
-      content: 'Perfect. I’ll share the link again.',
-      createdAt: DateTime.now().subtract(const Duration(minutes: 30)),
-    ),
-  ];
+  final PersonalChatRepository _repository = PersonalChatRepository();
+  final ProfileRepository _profileRepository = ProfileRepository();
+  UserModel? _currentUser;
+  bool _loadingProfile = true;
+  List<MessageModel> _messages = [];
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+    _loadProfileAndMessages();
+  }
+
+  Future<void> _loadProfileAndMessages() async {
+    try {
+      final user = await _profileRepository.getProfile();
+      final savedMessages = await _repository.loadMessages(widget.otherUserId);
+
+      if (!mounted) return;
+
+      setState(() {
+        _currentUser = user;
+        _messages = savedMessages.isNotEmpty
+            ? savedMessages
+            : [
+                MessageModel(
+                  id: DateTime.now().millisecondsSinceEpoch,
+                  teamId: 0,
+                  senderId: widget.otherUserId,
+                  senderName: widget.otherUserName,
+                  content: 'Hey! Let’s connect on this project.',
+                  createdAt: DateTime.now().subtract(const Duration(minutes: 3)),
+                ),
+              ];
+      });
+
+      await _repository.saveMessages(widget.otherUserId, _messages);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _currentUser = null;
+        _messages = [
+          MessageModel(
+            id: DateTime.now().millisecondsSinceEpoch,
+            teamId: 0,
+            senderId: widget.otherUserId,
+            senderName: widget.otherUserName,
+            content: 'Hey! Let’s connect on this project.',
+            createdAt: DateTime.now().subtract(const Duration(minutes: 3)),
+          ),
+        ];
+      });
+    } finally {
+      if (mounted) {
+        setState(() => _loadingProfile = false);
+        WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+      }
+    }
   }
 
   void _scrollToBottom() {
@@ -69,30 +98,35 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
     super.dispose();
   }
 
-  void _sendMessage() {
+  Future<void> _sendMessage() async {
     final text = messageController.text.trim();
     if (text.isEmpty) return;
+
+    final currentUserId = _currentUser?.id ?? 1;
+    final currentUserName = _currentUser?.name ?? 'You';
 
     final newMessage = MessageModel(
       id: DateTime.now().millisecondsSinceEpoch,
       teamId: 0,
-      senderId: 1,
-      senderName: 'You',
+      senderId: currentUserId,
+      senderName: currentUserName,
       content: text,
       createdAt: DateTime.now(),
     );
 
+    final updatedMessages = [..._messages, newMessage];
     setState(() {
-      _messages.add(newMessage);
+      _messages = updatedMessages;
     });
 
     messageController.clear();
+    await _repository.saveMessages(widget.otherUserId, updatedMessages);
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
   }
 
   Widget _messageBubble(MessageModel message) {
-    final bool fromMe = message.senderId == 1;
-    final String displayName = fromMe ? 'You' : widget.otherUserName;
+    final bool fromMe = message.senderId == (_currentUser?.id ?? 1);
+    final String displayName = fromMe ? (_currentUser?.name ?? 'You') : widget.otherUserName;
     final avatarColor = fromMe ? const Color(0xFF7C3AED) : const Color(0xFF22C55E);
     final time =
         '${message.createdAt.hour.toString().padLeft(2, '0')}:${message.createdAt.minute.toString().padLeft(2, '0')}';
@@ -229,24 +263,26 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
             ),
           ],
         ),
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFF101319), Color(0xFF0B0D12), Color(0xFF090B10)],
-            ),
-          ),
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.only(top: 12, bottom: 18),
-                  itemCount: _messages.length,
-                  itemBuilder: (_, index) => _messageBubble(_messages[index]),
+        body: _loadingProfile
+            ? const Center(child: CircularProgressIndicator())
+            : Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color(0xFF101319), Color(0xFF0B0D12), Color(0xFF090B10)],
+                  ),
                 ),
-              ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.only(top: 12, bottom: 18),
+                        itemCount: _messages.length,
+                        itemBuilder: (_, index) => _messageBubble(_messages[index]),
+                      ),
+                    ),
               SafeArea(
                 top: false,
                 child: Container(
