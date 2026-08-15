@@ -96,17 +96,21 @@ class _ChatScreenState extends State<ChatScreen> {
                             scrollDirection: Axis.horizontal,
                             itemCount: chatRooms.length,
                             separatorBuilder: (_, _) => const SizedBox(width: 12),
-                            itemBuilder: (_, index) => GestureDetector(
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const PersonalChatScreen(
-                                    otherUserName: 'Aarav',
+                            itemBuilder: (_, index) {
+                              final room = chatRooms[index];
+                              return GestureDetector(
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => PersonalChatScreen(
+                                      otherUserName: room.teamName,
+                                      otherUserId: room.teamId,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              child: _ActiveChannel(room: chatRooms[index]),
-                            ),
+                                child: _ActiveChannel(room: room),
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(height: 20),
