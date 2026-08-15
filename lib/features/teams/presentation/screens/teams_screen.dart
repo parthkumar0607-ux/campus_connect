@@ -65,14 +65,6 @@ class _TeamsScreenState extends State<TeamsScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
 
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: const Color(0xff6366F1),
-        foregroundColor: Colors.white,
-        onPressed: openCreateTeam,
-        icon: const Icon(Icons.add),
-        label: const Text("Create Team"),
-      ),
-
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: refreshTeams,
@@ -100,14 +92,11 @@ class _TeamsScreenState extends State<TeamsScreen> {
               final teams = snapshot.data ?? [];
 
               if (teams.isEmpty) {
-                return const Center(
-                  child: Text(
-                    "No Teams Yet",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                return Center(
+                  child: FilledButton.icon(
+                    onPressed: openCreateTeam,
+                    icon: const Icon(Icons.add),
+                    label: const Text('Create the first team'),
                   ),
                 );
               }
@@ -121,7 +110,7 @@ class _TeamsScreenState extends State<TeamsScreen> {
                           CrossAxisAlignment.start,
                       children: const [
                         Text(
-                          "Project Teams",
+                          "Teams",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 30,
@@ -130,12 +119,34 @@ class _TeamsScreenState extends State<TeamsScreen> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          "Collaborate with students on amazing projects.",
+                          "Find your squad and build something real.",
                           style: TextStyle(
                             color: Colors.white70,
                           ),
                         ),
                       ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 14),
+                  const Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _TeamFilter(label: 'All', active: true),
+                      _TeamFilter(label: 'Tech'),
+                      _TeamFilter(label: 'Design'),
+                      _TeamFilter(label: 'Sports'),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: openCreateTeam,
+                      icon: const Icon(Icons.add_circle_outline),
+                      label: const Text('Create a team'),
                     ),
                   ),
 
@@ -267,13 +278,13 @@ class _TeamCard extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: Colors.white
-                            .withOpacity(.08),
+                            .withValues(alpha: .08),
                         borderRadius:
                             BorderRadius.circular(
                                 30),
                         border: Border.all(
                           color: Colors.white
-                              .withOpacity(.12),
+                              .withValues(alpha: .12),
                         ),
                       ),
                       child: Text(
@@ -302,4 +313,24 @@ class _TeamCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _TeamFilter extends StatelessWidget {
+  final String label;
+  final bool active;
+  const _TeamFilter({required this.label, this.active = false});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+        decoration: BoxDecoration(
+          color: active ? const Color(0xFFEEE6FF) : Colors.white.withValues(alpha: .08),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Text(label,
+            style: TextStyle(
+                color: active ? const Color(0xFF5B21B6) : Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.w700)),
+      );
 }

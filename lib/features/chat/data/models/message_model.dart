@@ -2,6 +2,7 @@ class MessageModel {
   final int id;
   final int teamId;
   final int senderId;
+  final String senderName;
   final String content;
   final DateTime createdAt;
 
@@ -9,6 +10,7 @@ class MessageModel {
     required this.id,
     required this.teamId,
     required this.senderId,
+    required this.senderName,
     required this.content,
     required this.createdAt,
   });
@@ -20,6 +22,7 @@ class MessageModel {
       id: json["id"],
       teamId: json["team_id"],
       senderId: json["sender_id"],
+      senderName: json["sender_name"] ?? 'User ${json["sender_id"]}',
       content: json["content"],
       createdAt: DateTime.parse(
         json["created_at"],

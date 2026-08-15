@@ -20,13 +20,13 @@ class QuickActionCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(22),
-          color: Colors.white.withOpacity(.08),
+          color: Colors.white.withValues(alpha: .08),
           border: Border.all(
-            color: Colors.white.withOpacity(.12),
+            color: Colors.white.withValues(alpha: .12),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(.18),
+              color: Colors.black.withValues(alpha: .18),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),

@@ -19,19 +19,12 @@ class PrimaryButton extends StatelessWidget {
       width: double.infinity,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(14),
           gradient: const LinearGradient(
-            colors: [
-              Color(0xff6366F1),
-              Color(0xff8B5CF6),
-            ],
+            colors: [Color(0xFF7C3AED), Color(0xFFE85AD7)],
           ),
           boxShadow: const [
-            BoxShadow(
-              color: Color(0x556366F1),
-              blurRadius: 20,
-              offset: Offset(0, 10),
-            ),
+            BoxShadow(color: Color(0x667C3AED), blurRadius: 18, offset: Offset(0, 8)),
           ],
         ),
         child: FilledButton(
@@ -39,27 +32,15 @@ class PrimaryButton extends StatelessWidget {
           style: FilledButton.styleFrom(
             backgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           ),
           child: isLoading
               ? const SizedBox(
                   width: 22,
                   height: 22,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: Colors.white,
-                  ),
+                  child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
                 )
-              : Text(
-                  text,
-                  style: const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
+              : Text(text, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
         ),
       ),
     );

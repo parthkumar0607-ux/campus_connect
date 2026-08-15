@@ -1,4 +1,5 @@
 import '../../../chat/presentation/screens/chat_detail_screen.dart';
+import '../../../chat/presentation/screens/personal_chat_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -211,6 +212,20 @@ class _TeamDetailsScreenState extends State<TeamDetailsScreen> {
                       child: ListTile(
                         leading: const CircleAvatar(child: Icon(Icons.person)),
                         title: Text(member.name),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.message_rounded),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => PersonalChatScreen(
+                                  otherUserName: member.name,
+                                  otherUserId: member.id,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     );
                   }).toList(),

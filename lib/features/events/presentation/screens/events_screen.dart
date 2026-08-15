@@ -65,14 +65,6 @@ class _EventsScreenState extends State<EventsScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
 
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: const Color(0xff6366F1),
-        foregroundColor: Colors.white,
-        onPressed: createEvent,
-        icon: const Icon(Icons.add),
-        label: const Text("Create Event"),
-      ),
-
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: refreshEvents,
@@ -100,14 +92,11 @@ class _EventsScreenState extends State<EventsScreen> {
               final events = snapshot.data ?? [];
 
               if (events.isEmpty) {
-                return const Center(
-                  child: Text(
-                    "No Events Yet",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                return Center(
+                  child: FilledButton.icon(
+                    onPressed: createEvent,
+                    icon: const Icon(Icons.add),
+                    label: const Text('Create the first event'),
                   ),
                 );
               }
@@ -121,7 +110,7 @@ class _EventsScreenState extends State<EventsScreen> {
                           CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Campus Events",
+                          "Events",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 30,
@@ -130,12 +119,34 @@ class _EventsScreenState extends State<EventsScreen> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          "Discover workshops, hackathons and campus activities.",
+                          "Find your next campus memory.",
                           style: TextStyle(
                             color: Colors.white70,
                           ),
                         ),
                       ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 14),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: const [
+                        _EventFilter(label: 'Upcoming', active: true),
+                        _EventFilter(label: 'My events'),
+                        _EventFilter(label: 'Popular'),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: createEvent,
+                      icon: const Icon(Icons.add_circle_outline),
+                      label: const Text('Create an event'),
                     ),
                   ),
 
@@ -281,11 +292,11 @@ class _EventCard extends StatelessWidget {
                 vertical: 8,
               ),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(.08),
+                color: Colors.white.withValues(alpha: .08),
                 borderRadius:
                     BorderRadius.circular(30),
                 border: Border.all(
-                  color: Colors.white.withOpacity(.12),
+                  color: Colors.white.withValues(alpha: .12),
                 ),
               ),
               child: Text(
@@ -311,4 +322,25 @@ class _EventCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _EventFilter extends StatelessWidget {
+  final String label;
+  final bool active;
+  const _EventFilter({required this.label, this.active = false});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        margin: const EdgeInsets.only(right: 9),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: active
+              ? const LinearGradient(colors: [Color(0xFF8B5CF6), Color(0xFFEC5DC8)])
+              : null,
+          color: active ? null : Colors.white.withValues(alpha: .07),
+        ),
+        child: Text(label,
+            style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700)),
+      );
 }

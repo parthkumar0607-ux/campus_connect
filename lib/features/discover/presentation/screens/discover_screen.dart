@@ -145,8 +145,8 @@ class _DiscoverScreenState
                                   BoxDecoration(
                                 color: Colors
                                     .white
-                                    .withOpacity(
-                                        .08),
+                                    .withValues(
+                                        alpha: .08),
                                 borderRadius:
                                     BorderRadius
                                         .circular(

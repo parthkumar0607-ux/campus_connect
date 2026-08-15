@@ -282,7 +282,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   label: const Text("Cancel"),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
-                    side: BorderSide(color: Colors.white.withOpacity(0.2)),
+                    side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),

@@ -11,8 +11,10 @@ from app.models.team_member import TeamMember
 from app.models.user import User
 from app.routers.auth import router as auth_router
 from app.routers.chat import router as chat_router
+from app.routers.direct_messages import router as direct_messages_router
 from app.routers.events import router as events_router
 from app.routers.teams import router as teams_router
+from app.routers.team_invitations import router as team_invitations_router
 from app.routers.users import router as users_router
 
 # Imports above register every model with SQLAlchemy metadata before tables are created.
@@ -39,8 +41,10 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(teams_router)
+app.include_router(team_invitations_router)
 app.include_router(events_router)
 app.include_router(chat_router)
+app.include_router(direct_messages_router)
 
 
 @app.get("/")

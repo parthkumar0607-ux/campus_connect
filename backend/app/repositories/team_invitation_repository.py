@@ -21,7 +21,6 @@ class TeamInvitationRepository:
             )
             .first()
         )
-
     @staticmethod
     def get_user_invitations(
         db: Session,
@@ -32,6 +31,7 @@ class TeamInvitationRepository:
             .filter(
                 TeamInvitation.receiver_id == user_id,
             )
+            .order_by(TeamInvitation.created_at.desc())
             .all()
         )
 
@@ -50,24 +50,22 @@ class TeamInvitationRepository:
             )
             .first()
         )
-
     @staticmethod
     def save(db: Session):
         db.commit()
 
-
-@staticmethod
-def get_pending_by_id(
-    db: Session,
-    invitation_id: int,
-):
-    return (
-        db.query(TeamInvitation)
-        .filter(
-            TeamInvitation.id == invitation_id,
-            TeamInvitation.status == "pending",
+    @staticmethod
+    def get_pending_by_id(
+        db: Session,
+        invitation_id: int,
+    ):
+        return (
+            db.query(TeamInvitation)
+            .filter(
+                TeamInvitation.id == invitation_id,
+                TeamInvitation.status == "pending",
+            )
+            .first()
         )
-        .first()
-    )
 
         
