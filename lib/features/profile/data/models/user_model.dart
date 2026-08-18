@@ -7,6 +7,7 @@ class UserModel {
   final String? year;
   final String? bio;
   final String? skills;
+  final List<String>? currentlyLearning;
   final String? profileImage;
 
   UserModel({
@@ -19,6 +20,7 @@ class UserModel {
     this.bio,
     this.skills,
     this.profileImage,
+    this.currentlyLearning,
   });
 
   factory UserModel.fromJson(
@@ -34,6 +36,7 @@ class UserModel {
       bio: json["bio"],
       skills: json["skills"],
       profileImage: json["profile_image"],
+      currentlyLearning: (json["currently_learning"] as String?)?.split(RegExp(r'[;,\n]+')).map((s) => s.trim()).where((s) => s.isNotEmpty).toList() ?? [],
     );
   }
 
@@ -45,6 +48,7 @@ class UserModel {
       "year": year,
       "bio": bio,
       "skills": skills,
+      "currently_learning": (currentlyLearning ?? []).join(', '),
     };
   }
 }

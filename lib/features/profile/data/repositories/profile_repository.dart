@@ -18,6 +18,7 @@ class ProfileRepository {
     required String year,
     required String bio,
     required String skills,
+    required String currentlyLearning,
   }) async {
     return remoteDataSource.updateProfile(
       name: name,
@@ -26,6 +27,7 @@ class ProfileRepository {
       year: year,
       bio: bio,
       skills: skills,
+      currentlyLearning: currentlyLearning,
     );
   }
 

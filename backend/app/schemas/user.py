@@ -19,6 +19,7 @@ class UserUpdate(BaseModel):
     year: str = Field(max_length=20)
     bio: str = Field(max_length=500)
     skills: str = Field(max_length=500)
+    currently_learning: str = Field(max_length=500)
 
 
 class UserResponse(BaseModel):
@@ -31,6 +32,7 @@ class UserResponse(BaseModel):
     bio: Optional[str] = None
     skills: Optional[str] = None
     profile_image: Optional[str] = None
+    currently_learning: Optional[str] = None
 
     class Config:
         from_attributes = True

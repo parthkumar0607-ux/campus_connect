@@ -12,9 +12,9 @@ class ApiClient {
   static final Dio dio = Dio(
     BaseOptions(
       baseUrl: _configuredBaseUrl,
-      connectTimeout: const Duration(seconds: 45),
-      receiveTimeout: const Duration(seconds: 45),
-      sendTimeout: const Duration(seconds: 45),
+      connectTimeout: const Duration(seconds: 90),
+      receiveTimeout: const Duration(seconds: 90),
+      sendTimeout: const Duration(seconds: 90),
       headers: {
         "Content-Type": "application/json",
       },

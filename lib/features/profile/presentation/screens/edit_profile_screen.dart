@@ -32,6 +32,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late final TextEditingController yearController;
   late final TextEditingController bioController;
   late final TextEditingController skillsController;
+  late List<String> learningList;
 
   bool isLoading = false;
 
@@ -50,6 +51,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     bioController = TextEditingController(text: widget.user.bio ?? "");
 
     skillsController = TextEditingController(text: widget.user.skills ?? "");
+    learningList = List<String>.from(widget.user.currentlyLearning ?? []);
   }
 
   @override
@@ -103,6 +105,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         year: yearController.text.trim(),
         bio: bioController.text.trim(),
         skills: skillsController.text.trim(),
+        currentlyLearning: learningList.join(', '),
       );
 
       if (!mounted) return;
@@ -119,6 +122,47 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         setState(() {
           isLoading = false;
         });
+      }
+    }
+  }
+
+  Future<void> _addLearningItem() async {
+    final controller = TextEditingController();
+
+    final result = await showDialog<String?>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Theme.of(context).cardColor,
+        title: const Text('Add learning item', style: TextStyle(color: Colors.white)),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          style: const TextStyle(color: Colors.white),
+          decoration: const InputDecoration(hintText: 'e.g. GraphQL', hintStyle: TextStyle(color: Colors.white54)),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () {
+              final text = controller.text.trim();
+              if (text.isEmpty) return;
+              Navigator.pop(ctx, text);
+            },
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null && result.trim().isNotEmpty) {
+      final item = result.trim();
+      if (!learningList.any((e) => e.toLowerCase() == item.toLowerCase())) {
+        setState(() {
+          learningList.add(item);
+        });
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Item already exists')));
       }
     }
   }
@@ -258,6 +302,51 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       hintText: "Skills (comma separated)",
                       prefixIcon: Icons.code,
                       maxLines: 3,
+                    ),
+                    const SizedBox(height: 18),
+                    // Currently Learning
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text('Currently Learning', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w700)),
+                      ),
+                    ),
+                    GlassCard(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            ...learningList.map((s) => GestureDetector(
+                                  onTap: () {
+                                    // remove on tap
+                                    setState(() {
+                                      learningList.remove(s);
+                                    });
+                                  },
+                                  child: Chip(
+                                    backgroundColor: Theme.of(context).cardColor,
+                                    label: Text(s, style: const TextStyle(color: Colors.white)),
+                                    deleteIcon: const Icon(Icons.close, size: 18, color: Colors.white70),
+                                    onDeleted: () {
+                                      setState(() {
+                                        learningList.remove(s);
+                                      });
+                                    },
+                                  ),
+                                )),
+                            GestureDetector(
+                              onTap: _addLearningItem,
+                              child: Chip(
+                                backgroundColor: Colors.white.withValues(alpha: 0.04),
+                                label: Row(children: const [Icon(Icons.add, size: 18, color: Color(0xff8B5CF6)), SizedBox(width: 8), Text('Add', style: TextStyle(color: Colors.white))]),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),

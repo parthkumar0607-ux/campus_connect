@@ -23,6 +23,7 @@ class UserService:
         current_user.year = user_data.year
         current_user.bio = user_data.bio
         current_user.skills = user_data.skills
+        current_user.currently_learning = getattr(user_data, 'currently_learning', '')
 
         db.commit()
         db.refresh(current_user)

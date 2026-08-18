@@ -20,11 +20,23 @@ class CampusConnectApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF090B10),
         canvasColor: const Color(0xFF090B10),
         cardColor: const Color(0xFF11151D),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+        ),
       ),
       darkTheme: AppTheme.darkTheme.copyWith(
         scaffoldBackgroundColor: const Color(0xFF090B10),
         canvasColor: const Color(0xFF090B10),
         cardColor: const Color(0xFF11151D),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+        ),
       ),
       home: const SplashScreen(),
       onGenerateRoute: (settings) {

@@ -103,9 +103,18 @@ class _PersonalChatScreenState extends State<PersonalChatScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     } on DioException catch (error) {
       if (mounted) {
-        final message = error.response?.data is Map && error.response!.data['detail'] != null
-            ? error.response!.data['detail'].toString()
-            : 'Message failed to send';
+        String message = 'Message failed to send';
+
+        if (error.type == DioExceptionType.connectionTimeout ||
+            error.type == DioExceptionType.receiveTimeout ||
+            error.type == DioExceptionType.sendTimeout) {
+          message = 'The server is taking too long to respond. Please try again.';
+        } else if (error.response?.data is Map && error.response!.data['detail'] != null) {
+          message = error.response!.data['detail'].toString();
+        } else if (error.message != null) {
+          message = error.message!;
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(message)),
         );

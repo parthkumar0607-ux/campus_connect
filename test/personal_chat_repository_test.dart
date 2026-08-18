@@ -38,4 +38,19 @@ void main() {
     expect(loaded.first.content, 'Hi, are you free this evening?');
     expect(loaded.last.content, 'Yes, let’s do 6 PM.');
   });
+
+  test('parses direct message payloads that omit team_id', () {
+    final message = MessageModel.fromJson({
+      'id': 7,
+      'sender_id': 12,
+      'receiver_id': 3,
+      'sender_name': 'Aarav',
+      'content': 'hello',
+      'created_at': '2026-08-15T10:00:00Z',
+    });
+
+    expect(message.teamId, 0);
+    expect(message.senderId, 12);
+    expect(message.content, 'hello');
+  });
 }

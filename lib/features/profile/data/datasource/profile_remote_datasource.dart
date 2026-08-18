@@ -23,6 +23,7 @@ class ProfileRemoteDataSource {
     required String year,
     required String bio,
     required String skills,
+    required String currentlyLearning,
   }) async {
     final response = await ApiClient.dio.put(
       "/users/me",
@@ -33,6 +34,7 @@ class ProfileRemoteDataSource {
         "year": year,
         "bio": bio,
         "skills": skills,
+        "currently_learning": currentlyLearning,
       },
     );
 
@@ -55,9 +57,6 @@ class ProfileRemoteDataSource {
   data: formData,
 );
 
-print("UPLOAD RESPONSE:");
-print(response.data);
-
-return response.data["image_url"];
+    return response.data["image_url"];
   }
 }

@@ -20,7 +20,7 @@ class MessageModel {
   ) {
     return MessageModel(
       id: json["id"],
-      teamId: json["team_id"],
+      teamId: (json["team_id"] as num?)?.toInt() ?? 0,
       senderId: json["sender_id"],
       senderName: json["sender_name"] ?? 'User ${json["sender_id"]}',
       content: json["content"],

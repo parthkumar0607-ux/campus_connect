@@ -54,75 +54,61 @@ class _MainNavigationScreenState
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF09090D),
-            Color(0xFF101019),
+            Color(0xFF070A10),
+            Color(0xFF101319),
             Color(0xFF171126),
             Color(0xFF0D0D12),
           ],
         ),
       ),
       child: Scaffold(
-        backgroundColor: const Color(0xFF090B10),
+        backgroundColor: Colors.transparent,
         extendBody: true,
         body: _pages[_selectedIndex],
-
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 20,
-              sigmaY: 20,
-            ),
-            child: NavigationBar(
-              height: 68,
-              backgroundColor:
-                  const Color(0xFF17171F).withValues(alpha: .92),
-
-              indicatorColor:
-                  const Color(0xFFA855F7),
-
-              elevation: 0,
-
-              selectedIndex: _selectedIndex,
-
-              labelBehavior:
-                  NavigationDestinationLabelBehavior
-                      .alwaysHide,
-
-              onDestinationSelected: _selectTab,
-
-              destinations: const [
-                NavigationDestination(
-                  icon: Icon(Icons.home_outlined),
-                  selectedIcon: Icon(Icons.home),
-                  label: "Home",
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.explore_outlined),
-                  selectedIcon: Icon(Icons.explore),
-                  label: "Discover",
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.groups_outlined),
-                  selectedIcon: Icon(Icons.groups),
-                  label: "Teams",
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.event_outlined),
-                  selectedIcon: Icon(Icons.event),
-                  label: "Events",
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.person_outline),
-                  selectedIcon: Icon(Icons.person),
-                  label: "Profile",
-                ),
-              ],
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(26),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+              child: NavigationBar(
+                height: 72,
+                backgroundColor: const Color(0xFF171C27).withValues(alpha: .90),
+                indicatorColor: const Color(0xFF8B5CF6).withValues(alpha: 0.28),
+                elevation: 0,
+                selectedIndex: _selectedIndex,
+                labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+                onDestinationSelected: _selectTab,
+                destinations: const [
+                  NavigationDestination(
+                    icon: Icon(Icons.home_outlined),
+                    selectedIcon: Icon(Icons.home_rounded),
+                    label: "Home",
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.explore_outlined),
+                    selectedIcon: Icon(Icons.explore_rounded),
+                    label: "Discover",
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.groups_outlined),
+                    selectedIcon: Icon(Icons.groups_rounded),
+                    label: "Teams",
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.event_outlined),
+                    selectedIcon: Icon(Icons.event_rounded),
+                    label: "Events",
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.person_outline),
+                    selectedIcon: Icon(Icons.person_rounded),
+                    label: "Profile",
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
         ),
       ),
     );

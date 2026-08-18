@@ -55,3 +55,8 @@ class User(Base):
         String(500),
         default="",
     )
+    
+    currently_learning = Column(
+        String(500),
+        default="",
+    )
