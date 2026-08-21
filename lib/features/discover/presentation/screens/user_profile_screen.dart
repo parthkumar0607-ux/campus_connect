@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:campus_connect_v2/features/chat/presentation/screens/personal_chat_screen.dart';
 import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 
 import '../../models/discover_user_model.dart';
 
@@ -26,7 +27,7 @@ class UserProfileScreen extends StatelessWidget {
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: LinearGradient(
-                          colors: [Color(0xFFFF5C8A), Color(0xFF5865F2)],
+                          colors: [AppColors.blue, AppColors.primary],
                         ),
                       ),
                       child: CircleAvatar(
@@ -47,8 +48,7 @@ class UserProfileScreen extends StatelessWidget {
                             fontSize: 26,
                             fontWeight: FontWeight.w800)),
                     const SizedBox(height: 5),
-                    Text(user.course ?? 'Campus member',
-                        style: const TextStyle(color: Color(0xFF8E9BB5))),
+                    Text(user.course ?? 'Campus member', style: const TextStyle(color: AppColors.textSecondary)),
                     const SizedBox(height: 16),
                     FilledButton.icon(
                       onPressed: () {
@@ -75,7 +75,7 @@ class UserProfileScreen extends StatelessWidget {
                   user.bio?.isNotEmpty == true
                       ? user.bio!
                       : 'Here to meet people, make things, and leave campus better than I found it.',
-                  style: const TextStyle(color: Color(0xFFB8C3D9), height: 1.5),
+                  style: const TextStyle(color: AppColors.textSecondary, height: 1.5),
                 ),
               ),
               const SizedBox(height: 20),
@@ -109,12 +109,14 @@ class UserProfileScreen extends StatelessWidget {
 class _Label extends StatelessWidget {
   final String text;
   const _Label(this.text);
+
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(bottom: 8),
-        child: Text(text,
-            style: const TextStyle(
-                color: Color(0xFF8E9BB5), fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.1)),
+        child: Text(
+          text,
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.1),
+        ),
       );
 }
 
@@ -125,8 +127,8 @@ class _InfoRow extends StatelessWidget {
   const _InfoRow(this.icon, this.label, this.value);
   @override
   Widget build(BuildContext context) => ListTile(
-        leading: Icon(icon, color: const Color(0xFF8B95FF)),
-        title: Text(label, style: const TextStyle(color: Color(0xFF8E9BB5), fontSize: 13)),
-        subtitle: Text(value, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+        leading: Icon(icon, color: AppColors.primary),
+        title: Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+        subtitle: Text(value, style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w700)),
       );
 }

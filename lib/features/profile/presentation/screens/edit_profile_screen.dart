@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
 import 'package:campus_connect_v2/shared/widgets/primary_button.dart';
 import 'package:campus_connect_v2/shared/widgets/primary_textfield.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 
 import 'package:campus_connect_v2/features/profile/data/models/user_model.dart';
 import 'package:campus_connect_v2/features/profile/data/repositories/profile_repository.dart';
@@ -340,8 +341,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             GestureDetector(
                               onTap: _addLearningItem,
                               child: Chip(
-                                backgroundColor: Colors.white.withValues(alpha: 0.04),
-                                label: Row(children: const [Icon(Icons.add, size: 18, color: Color(0xff8B5CF6)), SizedBox(width: 8), Text('Add', style: TextStyle(color: Colors.white))]),
+                                backgroundColor: Colors.white.withAlpha(10),
+                                label: Row(children: const [Icon(Icons.add, size: 18, color: AppColors.primary), SizedBox(width: 8), Text('Add', style: TextStyle(color: AppColors.textPrimary))]),
                               ),
                             ),
                           ],

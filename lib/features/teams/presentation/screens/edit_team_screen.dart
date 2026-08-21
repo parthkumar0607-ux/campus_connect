@@ -87,9 +87,11 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
         message = e.response!.data["detail"];
       }
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
+      }
     } finally {
       if (mounted) {
         setState(() {
@@ -149,9 +151,11 @@ class _EditTeamScreenState extends State<EditTeamScreen> {
           message = e.response!.data["detail"];
         }
 
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(message)));
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(message)));
+        }
       } finally {
         if (mounted) {
           setState(() {

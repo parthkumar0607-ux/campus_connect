@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
 import 'package:campus_connect_v2/features/home/data/repositories/home_repository.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 
 import '../widgets/quick_action_card.dart';
 
@@ -72,13 +73,13 @@ class HomeScreen extends StatelessWidget {
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             gradient: LinearGradient(
-                              colors: [Color(0xFFFF5C8A), Color(0xFF8B5CF6)],
+                              colors: [AppColors.blue, AppColors.primary],
                             ),
                           ),
                           child: const CircleAvatar(
                             radius: 26,
-                            backgroundColor: Color(0xFF17213A),
-                            child: Icon(Icons.person, color: Colors.white, size: 28),
+                            backgroundColor: AppColors.surface,
+                            child: Icon(Icons.person, color: AppColors.textPrimary, size: 28),
                           ),
                         ),
                         const SizedBox(width: 14),
@@ -86,12 +87,12 @@ class HomeScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('GOOD EVENING',
+                                Text('GOOD EVENING',
                                   style: TextStyle(
-                                      color: Color(0xFF8E9BB5),
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 1.1)),
+                                    color: AppColors.textSecondary,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 1.1)),
                               SizedBox(height: 4),
                               Text('Your campus is buzzing ✦',
                                   style: TextStyle(
@@ -105,7 +106,7 @@ class HomeScreen extends StatelessWidget {
                           onPressed: () {},
                           tooltip: 'Notifications',
                           icon: const Icon(Icons.notifications_none_rounded,
-                              color: Color(0xFF8E9BB5)),
+                              color: AppColors.textSecondary),
                         ),
                       ],
                     ),
@@ -151,13 +152,13 @@ class HomeScreen extends StatelessWidget {
                     return const GlassCard(child: SizedBox(height: 72));
                   }
                   if (snap.hasError) {
-                    return GlassCard(child: Padding(padding: const EdgeInsets.all(12), child: Text('No upcoming events', style: TextStyle(color: Colors.white70))));
+                    return GlassCard(child: Padding(padding: const EdgeInsets.all(12), child: Text('No upcoming events', style: TextStyle(color: AppColors.textSecondary))));
                   }
 
                   final stats = snap.data as dynamic;
                   final upcoming = stats?.upcomingEvent ?? stats['upcoming_event'];
                   if (upcoming == null) {
-                    return GlassCard(child: Padding(padding: const EdgeInsets.all(12), child: Text('No upcoming events', style: TextStyle(color: Colors.white70))));
+                    return GlassCard(child: Padding(padding: const EdgeInsets.all(12), child: Text('No upcoming events', style: TextStyle(color: AppColors.textSecondary))));
                   }
 
                   return GlassCard(
@@ -166,12 +167,12 @@ class HomeScreen extends StatelessWidget {
                       children: [
                         Text(upcoming['title'] ?? '', style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700)),
                         const SizedBox(height: 8),
-                        Text(upcoming['description'] ?? '', style: const TextStyle(color: Color(0xFF8E9BB5), height: 1.5)),
+                        Text(upcoming['description'] ?? '', style: const TextStyle(color: AppColors.textSecondary, height: 1.5)),
                         const SizedBox(height: 14),
                         Row(children: [
-                          const Icon(Icons.schedule_rounded, color: Color(0xFF8E9BB5), size: 17),
+                          const Icon(Icons.schedule_rounded, color: AppColors.textSecondary, size: 17),
                           const SizedBox(width: 6),
-                          Text(upcoming['date_time'] ?? '', style: const TextStyle(color: Color(0xFF8E9BB5))),
+                          Text(upcoming['date_time'] ?? '', style: const TextStyle(color: AppColors.textSecondary)),
                         ])
                       ],
                     ),

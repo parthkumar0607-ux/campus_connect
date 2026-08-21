@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 
 import '../../data/models/event_model.dart';
 import '../../data/repositories/event_repository.dart';
@@ -335,10 +336,10 @@ class _EventFilter extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          gradient: active
-              ? const LinearGradient(colors: [Color(0xFF8B5CF6), Color(0xFFEC5DC8)])
+            gradient: active
+              ? const LinearGradient(colors: [AppColors.primary, AppColors.blue])
               : null,
-          color: active ? null : Colors.white.withValues(alpha: .07),
+            color: active ? null : Colors.white.withAlpha(15),
         ),
         child: Text(label,
             style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700)),

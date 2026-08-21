@@ -8,6 +8,7 @@ import 'package:campus_connect_v2/features/events/presentation/screens/events_sc
 import 'package:campus_connect_v2/features/home/presentation/screens/home_screen.dart';
 import 'package:campus_connect_v2/features/profile/presentation/screens/profile_screen.dart';
 import 'package:campus_connect_v2/features/teams/presentation/screens/teams_screen.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -49,15 +50,15 @@ class _MainNavigationScreenState
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF070A10),
-            Color(0xFF101319),
-            Color(0xFF171126),
-            Color(0xFF0D0D12),
+            AppColors.background,
+            AppColors.surface,
+            AppColors.surfaceElevated,
+            AppColors.surface.withAlpha(245),
           ],
         ),
       ),
@@ -73,8 +74,8 @@ class _MainNavigationScreenState
               filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
               child: NavigationBar(
                 height: 72,
-                backgroundColor: const Color(0xFF171C27).withValues(alpha: .90),
-                indicatorColor: const Color(0xFF8B5CF6).withValues(alpha: 0.28),
+                backgroundColor: AppColors.surfaceGlass.withAlpha(230),
+                indicatorColor: AppColors.primary.withAlpha(71),
                 elevation: 0,
                 selectedIndex: _selectedIndex,
                 labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,

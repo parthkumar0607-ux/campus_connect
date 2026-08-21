@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 
 import 'package:campus_connect_v2/features/teams/data/models/team_model.dart';
 import 'package:campus_connect_v2/features/teams/data/repositories/team_repository.dart';
@@ -198,8 +199,8 @@ class _TeamCard extends StatelessWidget {
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Color(0xff6366F1),
-                        Color(0xff8B5CF6),
+                        AppColors.primary,
+                        AppColors.blue,
                       ],
                     ),
                     borderRadius: BorderRadius.all(

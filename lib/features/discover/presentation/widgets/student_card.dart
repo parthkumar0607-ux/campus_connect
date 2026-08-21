@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:campus_connect_v2/features/chat/presentation/screens/personal_chat_screen.dart';
 import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 
 import '../../models/discover_user_model.dart';
 import '../screens/user_profile_screen.dart';
@@ -36,7 +37,7 @@ class StudentCard extends StatelessWidget {
                   tag: "user_${user.id}",
                   child: CircleAvatar(
                     radius: 34,
-                    backgroundColor: const Color(0xff6366F1),
+                    backgroundColor: AppColors.primary,
                     backgroundImage: user.profileImage != null &&
                             user.profileImage!.isNotEmpty
                         ? NetworkImage(user.profileImage!)
@@ -73,8 +74,8 @@ class StudentCard extends StatelessWidget {
                       Text(
                         "${user.course ?? "Student"} • ${user.year ?? ""}",
                         style: const TextStyle(
-                          color: Colors.white70,
-                        ),
+                            color: AppColors.textSecondary,
+                          ),
                       ),
 
                       const SizedBox(height: 4),
@@ -82,9 +83,9 @@ class StudentCard extends StatelessWidget {
                       Text(
                         user.college ?? "",
                         style: const TextStyle(
-                          color: Colors.white54,
-                          fontSize: 13,
-                        ),
+                            color: AppColors.textSecondary,
+                            fontSize: 13,
+                          ),
                       ),
                     ],
                   ),
@@ -138,7 +139,7 @@ class StudentCard extends StatelessWidget {
                         child: Text(
                           skill.trim(),
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                             fontSize: 13,
                           ),
                         ),
@@ -160,7 +161,7 @@ class StudentCard extends StatelessWidget {
                 child: const Text(
                   "No Skills Added",
                   style: TextStyle(
-                    color: Colors.white70,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ),

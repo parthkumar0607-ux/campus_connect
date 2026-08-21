@@ -51,7 +51,7 @@ class _EventDetailsScreenState
   void showError(
     DioException e,
   ) {
-    if (!mounted) return;
+      if (!context.mounted) return;
 
     String message =
         "Something went wrong";
@@ -319,7 +319,7 @@ class _EventDetailsScreenState
                                       event.id,
                                     );
 
-                                    if (!mounted) {
+                                    if (!context.mounted) {
                                       return;
                                     }
 
@@ -368,7 +368,7 @@ class _EventDetailsScreenState
                                       event.id,
                                     );
 
-                                    if (!mounted) {
+                                    if (!context.mounted) {
                                       return;
                                     }
 
@@ -409,8 +409,7 @@ class _EventDetailsScreenState
                               ),
                             );
 
-                            if (updated == true &&
-                                mounted) {
+                            if (updated == true && context.mounted) {
                               Navigator.pop(
                                 context,
                                 true,
@@ -504,7 +503,7 @@ class _EventDetailsScreenState
                                       event.id,
                                     );
 
-                                    if (!mounted) {
+                                    if (!context.mounted) {
                                       return;
                                     }
 

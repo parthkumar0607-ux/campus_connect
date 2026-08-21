@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
 import 'package:campus_connect_v2/shared/widgets/gradient_scaffold.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 import 'package:campus_connect_v2/core/services/storage_service.dart';
 import 'package:campus_connect_v2/features/auth/data/repositories/auth_repository.dart';
 import 'package:campus_connect_v2/features/auth/presentation/screens/register_screen.dart';
@@ -72,15 +73,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: 96,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(28),
-                  gradient: const LinearGradient(colors: [Color(0xFF5865F2), Color(0xFF8B5CF6)]),
-                  boxShadow: const [BoxShadow(color: Color(0x665865F2), blurRadius: 32)],
+                  gradient: const LinearGradient(colors: [AppColors.blue, AppColors.primary]),
+                  boxShadow: [BoxShadow(color: AppColors.primary.withAlpha(46), blurRadius: 32)],
                 ),
                 child: const Icon(Icons.school_rounded, color: Colors.white, size: 46),
               ),
               const SizedBox(height: 20),
               const Text('CampusConnect', style: TextStyle(color: Colors.white, fontSize: 34, fontWeight: FontWeight.w800)),
               const SizedBox(height: 8),
-              const Text('Discord vibes • Instagram polish', style: TextStyle(color: Color(0xFF8E9BB5), fontSize: 15)),
+              const Text('Discord vibes • Instagram polish', style: TextStyle(color: AppColors.textSecondary, fontSize: 15)),
               const SizedBox(height: 28),
               GlassCard(
                 child: Column(
@@ -88,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const Text('Welcome back', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w700)),
                     const SizedBox(height: 8),
-                    const Text('Sign in and jump back into your campus circle.', style: TextStyle(color: Color(0xFF8E9BB5))),
+                    const Text('Sign in and jump back into your campus circle.', style: TextStyle(color: AppColors.textSecondary)),
                     const SizedBox(height: 24),
                     PrimaryTextField(controller: emailController, hintText: 'College Email', prefixIcon: Icons.email_outlined),
                     const SizedBox(height: 14),
@@ -98,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       prefixIcon: Icons.lock_outline,
                       obscureText: obscurePassword,
                       suffixIcon: IconButton(
-                        color: const Color(0xFF8E9BB5),
+                        color: AppColors.textSecondary,
                         icon: Icon(obscurePassword ? Icons.visibility_off : Icons.visibility),
                         onPressed: () => setState(() => obscurePassword = !obscurePassword),
                       ),

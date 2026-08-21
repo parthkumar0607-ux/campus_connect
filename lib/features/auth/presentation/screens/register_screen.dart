@@ -5,6 +5,7 @@ import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
 import 'package:campus_connect_v2/shared/widgets/gradient_scaffold.dart';
 import 'package:campus_connect_v2/shared/widgets/primary_button.dart';
 import 'package:campus_connect_v2/shared/widgets/primary_textfield.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -76,15 +77,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
               width: 96,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(28),
-                gradient: const LinearGradient(colors: [Color(0xFF5865F2), Color(0xFF8B5CF6)]),
-                boxShadow: const [BoxShadow(color: Color(0x665865F2), blurRadius: 30)],
+                gradient: const LinearGradient(colors: [AppColors.blue, AppColors.primary]),
+                boxShadow: [BoxShadow(color: AppColors.primary.withAlpha(41), blurRadius: 30)],
               ),
               child: const Icon(Icons.school_rounded, color: Colors.white, size: 46),
             ),
             const SizedBox(height: 20),
             const Text('Create account', style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.w800)),
             const SizedBox(height: 8),
-            const Text('Join your campus community and start connecting.', style: TextStyle(color: Color(0xFF8E9BB5))),
+            const Text('Join your campus community and start connecting.', style: TextStyle(color: AppColors.textSecondary)),
             const SizedBox(height: 24),
             GlassCard(
               child: Column(children: [
@@ -98,7 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   prefixIcon: Icons.lock_outline,
                   obscureText: obscurePassword,
                   suffixIcon: IconButton(
-                    color: const Color(0xFF8E9BB5),
+                    color: AppColors.textSecondary,
                     icon: Icon(obscurePassword ? Icons.visibility_off : Icons.visibility),
                     onPressed: () => setState(() => obscurePassword = !obscurePassword),
                   ),
@@ -110,7 +111,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   prefixIcon: Icons.lock_outline,
                   obscureText: obscureConfirmPassword,
                   suffixIcon: IconButton(
-                    color: const Color(0xFF8E9BB5),
+                    color: AppColors.textSecondary,
                     icon: Icon(obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
                     onPressed: () => setState(() => obscureConfirmPassword = !obscureConfirmPassword),
                   ),

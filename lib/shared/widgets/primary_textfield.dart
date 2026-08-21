@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 
 class PrimaryTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -27,12 +28,12 @@ class PrimaryTextField extends StatelessWidget {
       obscureText: obscureText,
       keyboardType: keyboardType,
       maxLines: obscureText ? 1 : maxLines,
-      style: const TextStyle(color: Colors.white, fontSize: 15),
-      cursorColor: const Color(0xFF5865F2),
+      style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
+      cursorColor: AppColors.blue,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(color: Color(0xFF8E9BB5)),
-        prefixIcon: prefixIcon == null ? null : Icon(prefixIcon, color: Color(0xFF8E9BB5)),
+        hintStyle: const TextStyle(color: AppColors.textSecondary),
+        prefixIcon: prefixIcon == null ? null : Icon(prefixIcon, color: AppColors.textSecondary),
         suffixIcon: suffixIcon,
       ),
     );

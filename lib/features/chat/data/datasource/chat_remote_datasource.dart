@@ -8,11 +8,8 @@ class ChatRemoteDataSource {
       getChatRooms() async {
     final response =
         await ApiClient.dio.get("/chat");
-
     return (response.data as List)
-        .map(
-          (e) => ChatRoomModel.fromJson(e),
-        )
+        .map((e) => ChatRoomModel.fromJson(Map<String, dynamic>.from(e)))
         .toList();
   }
 

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../../teams/data/repositories/team_repository.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 import '../../data/models/message_model.dart';
 import '../../data/repositories/chat_repository.dart';
 
@@ -318,10 +319,10 @@ class _ChatDetailScreenState
                           height: 42,
                           padding: const EdgeInsets.symmetric(horizontal: 14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF1F2430),
+                            color: AppColors.surfaceElevated,
                             borderRadius: BorderRadius.circular(24),
                             border: Border.all(
-                              color: const Color(0xFF2D3542),
+                              color: AppColors.border,
                               width: 1,
                             ),
                           ),
@@ -338,7 +339,7 @@ class _ChatDetailScreenState
                                 border: InputBorder.none,
                                 hintText: 'Message #channel',
                                 hintStyle: TextStyle(
-                                  color: Color(0xFF8D93A6),
+                                  color: AppColors.textSecondary,
                                   fontSize: 15,
                                 ),
                               ),
@@ -356,7 +357,7 @@ class _ChatDetailScreenState
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           gradient: LinearGradient(
-                            colors: [Color(0xFF7C3AED), Color(0xFF5865F2)],
+                            colors: [AppColors.primary, AppColors.blue],
                           ),
                         ),
                         child: IconButton(
@@ -395,9 +396,9 @@ class _ChatDetailScreenState
 }
 
 const _avatarColors = [
-  Color(0xFF7C3AED),
-  Color(0xFFE85AD7),
-  Color(0xFF0EA5E9),
-  Color(0xFF22C55E),
-  Color(0xFFF59E0B),
+  AppColors.primary,
+  AppColors.blue,
+  AppColors.cyan,
+  AppColors.success,
+  AppColors.warning,
 ];

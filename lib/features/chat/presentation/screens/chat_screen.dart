@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:campus_connect_v2/shared/widgets/glass_card.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 
 import '../../data/models/chat_room_model.dart';
 import '../../data/repositories/chat_repository.dart';
 import 'chat_detail_screen.dart';
 import 'personal_chat_screen.dart';
+import 'package:campus_connect_v2/features/users/presentation/screens/users_picker_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -36,13 +38,13 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: const Color(0xFF090B10),
+        backgroundColor: AppColors.background,
         body: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xFF101319), Color(0xFF0B0D12), Color(0xFF090B10)],
+              colors: [AppColors.surface, AppColors.surface.withAlpha(250), AppColors.background],
             ),
           ),
           child: SafeArea(
@@ -57,17 +59,39 @@ class _ChatScreenState extends State<ChatScreen> {
                         const Expanded(
                           child: Text('Chats',
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: AppColors.textPrimary,
                                   fontSize: 30,
                                   fontWeight: FontWeight.w800)),
                         ),
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: .08),
+                            color: Colors.white.withAlpha(20),
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              final selected = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const UsersPickerScreen(),
+                                ),
+                              );
+                              if (!mounted) return;
+
+                              if (selected is Map && selected['id'] != null) {
+                                final result = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => PersonalChatScreen(
+                                      otherUserName: selected['name'],
+                                      otherUserId: selected['id'],
+                                    ),
+                                  ),
+                                );
+
+                                if (result == true) await loadChats();
+                              }
+                            },
                             icon: const Icon(Icons.add, color: Colors.white),
                             tooltip: 'New chat',
                           ),
@@ -84,11 +108,11 @@ class _ChatScreenState extends State<ChatScreen> {
                       const SizedBox(height: 20),
                       if (chatRooms.isNotEmpty) ...[
                         const Text('ACTIVE NOW',
-                            style: TextStyle(
-                                color: Color(0xFFA9A6B4),
-                                fontSize: 11,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 1.1)),
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.1)),
                         const SizedBox(height: 12),
                         SizedBox(
                           height: 76,
@@ -99,15 +123,30 @@ class _ChatScreenState extends State<ChatScreen> {
                             itemBuilder: (_, index) {
                               final room = chatRooms[index];
                               return GestureDetector(
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => PersonalChatScreen(
-                                      otherUserName: room.teamName,
-                                      otherUserId: room.teamId,
-                                    ),
-                                  ),
-                                ),
+                                  onTap: () async {
+                                    final result = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) {
+                                          if (room.kind == 'dm') {
+                                            return PersonalChatScreen(
+                                              otherUserName: room.name,
+                                              otherUserId: room.id,
+                                            );
+                                          }
+
+                                          return ChatDetailScreen(
+                                            teamId: room.id,
+                                            teamName: room.name,
+                                          );
+                                        },
+                                      ),
+                                    );
+
+                                    if (result == true) {
+                                      await loadChats();
+                                    }
+                                  },
                                 child: _ActiveChannel(room: room),
                               );
                             },
@@ -115,50 +154,107 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                         const SizedBox(height: 20),
                       ],
-                      const Text('YOUR CHANNELS',
+                        const Text('YOUR CHANNELS',
                           style: TextStyle(
-                              color: Color(0xFFA9A6B4),
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 1.1)),
+                            color: AppColors.textSecondary,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.1)),
                       const SizedBox(height: 12),
                       if (chatRooms.isEmpty)
                         const GlassCard(
                           child: Column(
                             children: [
                               Icon(Icons.forum_outlined,
-                                  size: 44, color: Color(0xFF8B95FF)),
+                                  size: 44, color: AppColors.primary),
                               SizedBox(height: 12),
                               Text('No channels yet',
                                   style: TextStyle(
-                                      color: Colors.white,
+                                      color: AppColors.textPrimary,
                                       fontWeight: FontWeight.w800,
                                       fontSize: 18)),
                               SizedBox(height: 6),
                               Text('Join a team to unlock its private channel.',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(color: Color(0xFF8E9BB5))),
+                                  style: TextStyle(color: AppColors.textSecondary)),
                             ],
                           ),
                         )
                       else
-                        ...chatRooms.map(
-                          (room) => Padding(
+                        ...chatRooms.map((room) {
+                          return Padding(
                             padding: const EdgeInsets.only(bottom: 12),
-                            child: _ChannelCard(
-                              room: room,
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => ChatDetailScreen(
-                                    teamId: room.teamId,
-                                    teamName: room.teamName,
+                            child: room.kind == 'dm'
+                                ? InkWell(
+                                    onTap: () async {
+                                      final result = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => PersonalChatScreen(
+                                            otherUserName: room.name,
+                                            otherUserId: room.id,
+                                          ),
+                                        ),
+                                      );
+
+                                      if (result == true) await loadChats();
+                                    },
+                                    child: GlassCard(
+                                      padding: const EdgeInsets.all(12),
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 22,
+                                            backgroundColor: const Color(0xFF28223A),
+                                            child: Text(room.name.substring(0, 1).toUpperCase(),
+                                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(room.name,
+                                                    style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.w800,
+                                                        fontSize: 16)),
+                                                const SizedBox(height: 5),
+                                                Text(room.lastMessage ?? 'Say hi!',
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: const TextStyle(color: AppColors.textSecondary)),
+                                              ],
+                                            ),
+                                          ),
+                                          Column(children: [
+                                            Text(_timeAgo(room.lastMessageTime),
+                                                style: const TextStyle(color: AppColors.textSecondary, fontSize: 11)),
+                                            const SizedBox(height: 7),
+                                            const Icon(Icons.chevron_right_rounded, color: AppColors.textSecondary, size: 19),
+                                          ]),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                : _ChannelCard(
+                                    room: room,
+                                    onTap: () async {
+                                      final result = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => ChatDetailScreen(
+                                            teamId: room.id,
+                                            teamName: room.name,
+                                          ),
+                                        ),
+                                      );
+
+                                      if (result == true) await loadChats();
+                                    },
                                   ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                          );
+                        }),
                     ],
                   ),
                 ),
@@ -184,10 +280,10 @@ class _ChannelCard extends StatelessWidget {
               Container(
                 height: 52,
                 width: 52,
-                decoration: BoxDecoration(
+                  decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(17),
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF7C3AED), Color(0xFFE85AD7)],
+                    colors: [AppColors.primary, AppColors.blue],
                   ),
                 ),
                 child: const Icon(Icons.tag_rounded, color: Colors.white),
@@ -199,7 +295,7 @@ class _ChannelCard extends StatelessWidget {
                   height: 13,
                   width: 13,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF57F287),
+                    color: AppColors.success,
                     shape: BoxShape.circle,
                     border: Border.all(color: const Color(0xFF18181F), width: 2),
                   ),
@@ -207,28 +303,28 @@ class _ChannelCard extends StatelessWidget {
               ),
               ]),
               const SizedBox(width: 13),
-              Expanded(
+                    Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(room.teamName,
+                    Text(room.name,
                         style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w800,
                             fontSize: 16)),
                     const SizedBox(height: 5),
                     Text(room.lastMessage ?? 'Start the conversation',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(color: Color(0xFF8E9BB5))),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: AppColors.textSecondary)),
                   ],
                 ),
               ),
               Column(children: [
                 Text(_timeAgo(room.lastMessageTime),
-                    style: const TextStyle(color: Color(0xFFA9A6B4), fontSize: 11)),
+                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 11)),
                 const SizedBox(height: 7),
-                const Icon(Icons.chevron_right_rounded, color: Color(0xFFA9A6B4), size: 19),
+                const Icon(Icons.chevron_right_rounded, color: AppColors.textSecondary, size: 19),
               ]),
             ],
           ),
@@ -248,7 +344,7 @@ class _ActiveChannel extends StatelessWidget {
             CircleAvatar(
               radius: 27,
               backgroundColor: const Color(0xFF28223A),
-              child: Text(room.teamName.substring(0, 1).toUpperCase(),
+              child: Text(room.name.substring(0, 1).toUpperCase(),
                   style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
             ),
             Positioned(
@@ -266,7 +362,7 @@ class _ActiveChannel extends StatelessWidget {
             ),
           ]),
           const SizedBox(height: 6),
-          Text(room.teamName, maxLines: 1, overflow: TextOverflow.ellipsis,
+            Text(room.name, maxLines: 1, overflow: TextOverflow.ellipsis,
               style: const TextStyle(color: Color(0xFFA9A6B4), fontSize: 11)),
         ]),
       );

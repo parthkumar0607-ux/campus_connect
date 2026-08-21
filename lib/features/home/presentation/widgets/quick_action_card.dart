@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 
 class QuickActionCard extends StatelessWidget {
   final IconData icon;
@@ -17,16 +18,16 @@ class QuickActionCard extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(22),
       onTap: onTap,
-      child: Container(
+        child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(22),
-          color: Colors.white.withValues(alpha: .08),
+          color: Colors.white.withAlpha(15),
           border: Border.all(
-            color: Colors.white.withValues(alpha: .12),
+            color: AppColors.border.withAlpha(31),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: .18),
+              color: Colors.black.withAlpha(46),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -42,8 +43,8 @@ class QuickActionCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
                   colors: [
-                    Color(0xff6366F1),
-                    Color(0xff8B5CF6),
+                    AppColors.primary,
+                    AppColors.blue,
                   ],
                 ),
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
@@ -23,11 +24,11 @@ class PrimaryButton extends StatelessWidget {
           gradient: const LinearGradient(
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
-            colors: [Color(0xFF8B5CF6), Color(0xFFEC5DC8)],
+            colors: [AppColors.primary, AppColors.blue],
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF8B5CF6).withValues(alpha: 0.38),
+              color: AppColors.glow,
               blurRadius: 24,
               offset: const Offset(0, 12),
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:campus_connect_v2/core/theme/app_colors.dart';
 
 class GlassCard extends StatelessWidget {
   final Widget child;
@@ -22,20 +23,20 @@ class GlassCard extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            const Color(0xFF1A2230).withValues(alpha: 0.96),
-            const Color(0xFF121821).withValues(alpha: 0.98),
+            AppColors.surfaceElevated.withAlpha(245),
+            AppColors.surface.withAlpha(250),
           ],
         ),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08), width: 1.1),
+        border: Border.all(color: AppColors.textPrimary.withAlpha(10), width: 1.1),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF8B5CF6).withValues(alpha: 0.10),
+            color: AppColors.glow,
             blurRadius: 22,
             spreadRadius: 1,
             offset: const Offset(0, 12),
           ),
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.30),
+            color: Colors.black.withAlpha(76),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
